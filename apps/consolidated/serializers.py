@@ -24,6 +24,7 @@ from .models import (
     InventoryTransaction,
     FeedConsumption,
     InventoryAlert,
+    HealthRecord,
 )
 
 # Constants
@@ -598,7 +599,7 @@ class InventoryItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = InventoryItem
         fields = '__all__'
-        read_only_fields = ['id', 'created_at', 'updated_at', 'farmer', 'farmer_id']
+        read_only_fields = ['id', 'created_at', 'updated_at', 'farmer_id']
         extra_kwargs = {
             'farmer': {'write_only': True, 'required': False},
             'farm': {'write_only': True, 'required': False},
@@ -694,3 +695,17 @@ class InventoryAlertSerializer(serializers.ModelSerializer):
         if value not in valid_types:
             raise serializers.ValidationError(f"Invalid alert type. Must be one of: {', '.join(valid_types)}")
         return value
+
+class HealthRecordSerializer(serializers.ModelSerializer):
+    batch_number = serializers.CharField(source='affected_batch.batch_number', read_only=True)
+    farm_name = serializers.CharField(source='farm.name', read_only=True)
+    
+    class Meta:
+        model = HealthRecord
+        fields = '__all__'
+        read_only_fields = ['id', 'created_at', 'updated_at', 'farm_name', 'batch_number']
+        extra_kwargs = {
+            'farm': {'write_only': True, 'required': True},
+            'affected_batch': {'write_only': True, 'required': False},
+            'reported_by': {'write_only': True, 'required': False}
+        }

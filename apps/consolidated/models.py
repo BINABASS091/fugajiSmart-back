@@ -729,3 +729,50 @@ class InventoryAlert(models.Model):
 
     def __str__(self):
         return f"{self.alert_type} - {self.item.name} - {self.message}"
+
+class HealthRecord(models.Model):
+    RECORD_TYPES = [
+        ('VACCINATION', 'Vaccination'),
+        ('MEDICATION', 'Medication'),
+        ('DISEASE', 'Disease Report'),
+        ('INJURY', 'Injury'),
+        ('CHECKUP', 'Routine Checkup'),
+        ('LAB_RESULT', 'Lab Result'),
+    ]
+
+    OUTCOME_CHOICES = [
+        ('RECOVERED', 'Recovered'),
+        ('UNDER_TREATMENT', 'Under Treatment'),
+        ('DIED', 'Died'),
+        ('CULLED', 'Culled'),
+        ('UNKNOWN', 'Unknown'),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    farm = models.ForeignKey(Farm, on_delete=models.CASCADE, related_name='health_records')
+    affected_batch = models.ForeignKey('Batch', on_delete=models.SET_NULL, null=True, blank=True, related_name='health_records', help_text="Batch closely monitored")
+    reported_by = models.ForeignKey(FarmerProfile, on_delete=models.SET_NULL, null=True, blank=True)
+    
+    record_type = models.CharField(max_length=20, choices=RECORD_TYPES)
+    date = models.DateField(default=timezone.now)
+    
+    # Clinical details
+    symptoms = models.TextField(null=True, blank=True, help_text="Observed symptoms")
+    diagnosis = models.CharField(max_length=255, null=True, blank=True)
+    treatment_plan = models.TextField(null=True, blank=True, help_text="Medication or action taken")
+    outcome = models.CharField(max_length=20, choices=OUTCOME_CHOICES, default='UNDER_TREATMENT', blank=True)
+    
+    notes = models.TextField(null=True, blank=True)
+    cost = models.DecimalField(max_digits=10, decimal_places=2, default=0, null=True, blank=True, help_text="Cost of treatment")
+    next_followup_date = models.DateField(null=True, blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-date', '-created_at']
+        verbose_name = 'Health Record'
+        verbose_name_plural = 'Health Records'
+
+    def __str__(self):
+        return f"{self.record_type} - {self.date}"

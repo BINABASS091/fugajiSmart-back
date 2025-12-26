@@ -28,6 +28,7 @@ from .views import (
     InventoryTransactionViewSet,
     FeedConsumptionViewSet,
     InventoryAlertViewSet,
+    HealthRecordViewSet,
 )
 
 router = DefaultRouter()
@@ -47,6 +48,7 @@ router.register(r'inventory', InventoryItemViewSet, basename='inventory-item')
 router.register(r'inventory-transactions', InventoryTransactionViewSet, basename='inventory-transaction')
 router.register(r'feed-consumption', FeedConsumptionViewSet, basename='feed-consumption')
 router.register(r'inventory-alerts', InventoryAlertViewSet, basename='inventory-alert')
+router.register(r'health-records', HealthRecordViewSet, basename='health-record')
 
 @ensure_csrf_cookie
 def csrf_view(request, version=None):

@@ -35,6 +35,7 @@ from .serializers import (
     InventoryTransactionSerializer,
     FeedConsumptionSerializer,
     InventoryAlertSerializer,
+    HealthRecordSerializer,
 )
 from .api_docs import (
     extend_schema_auth, 
@@ -69,6 +70,7 @@ from .models import (
     InventoryTransaction,
     FeedConsumption,
     InventoryAlert,
+    HealthRecord,
 )
 from .authentication import set_jwt_cookies
 
@@ -798,6 +800,53 @@ class FeedConsumptionViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         """Ensure batch belongs to farmer"""
+        # (This is handled in serializer.validate usually, or add logic here)
+        pass
+
+class HealthRecordViewSet(viewsets.ModelViewSet):
+    serializer_class = HealthRecordSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filterset_fields = ['record_type', 'affected_batch', 'outcome', 'farm']
+    ordering_fields = ['date', 'created_at', 'cost']
+    ordering = ['-date', '-created_at']
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = HealthRecord.objects.select_related('farm', 'affected_batch', 'reported_by')
+        
+        if user.role == 'FARMER':
+            queryset = queryset.filter(farm__farmer__user=user)
+        elif user.role == 'ADMIN':
+            queryset = queryset.all()
+        else:
+            queryset = queryset.none()
+            
+        # Filter by batch if provided
+        batch_id = self.request.query_params.get('batch')
+        if batch_id:
+            queryset = queryset.filter(affected_batch_id=batch_id)
+            
+        return queryset
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        if user.role == 'FARMER':
+            # Auto-assign farm and reporter
+            profile = get_object_or_404(FarmerProfile, user=user)
+            
+            # If batch is provided, ensure it belongs to farmer
+            batch_id = self.request.data.get('affected_batch')
+            if batch_id:
+                try:
+                    batch = Batch.objects.get(id=batch_id, farm__farmer=profile)
+                    serializer.save(reported_by=profile, affected_batch=batch)
+                except Batch.DoesNotExist:
+                     raise serializers.ValidationError({"affected_batch": "Invalid batch ID"})
+            else:
+                 serializer.save(reported_by=profile)
+        else:
+            serializer.save()
         user = self.request.user
         if user.role == 'FARMER':
             farmer_profile = get_object_or_404(FarmerProfile, user=user)
