@@ -21,9 +21,19 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-fallback-key-for-dev-only')
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
-ALLOWED_HOSTS = ['*']  # Loosened for production troubleshooting
+
+SECRET_KEY = os.getenv('SECRET_KEY')
+if not SECRET_KEY:
+    if DEBUG:
+        SECRET_KEY = 'django-insecure-fallback-key-for-dev-only'
+    else:
+        from django.core.exceptions import ImproperlyConfigured
+        raise ImproperlyConfigured("SECRET_KEY environment variable must be set in production")
+
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',') if os.getenv('ALLOWED_HOSTS') else []
+if not ALLOWED_HOSTS and DEBUG:
+    ALLOWED_HOSTS = ['*']
 
 if os.getenv('VERCEL') == '1':
     DEBUG = False
@@ -96,7 +106,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+
 # Database: prefer DATABASE_URL (PostgreSQL), fallback to sqlite3 for local dev
+
 DATABASES = {}
 database_url = os.getenv('DATABASE_URL', '').strip()
 if database_url:
@@ -203,11 +215,7 @@ CSRF_COOKIE_SAMESITE = 'None'
 SESSION_COOKIE_SAMESITE = 'None'
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_HTTPONLY = False  # Must be False for frontend to read it via cookie-js if needed, but Django works better with True for security.
-                              # Actually, Django docs recommend True for security. frontend uses getCsrfToken from cookie.
-                              # If getCsrfToken needs to read it, it MUST be False. 
-                              # Let's check api.ts... it does document.cookie.match. So MUST be False.
-CSRF_COOKIE_HTTPONLY = False 
+CSRF_COOKIE_HTTPONLY = True 
 
 
 LANGUAGE_CODE = 'en-us'

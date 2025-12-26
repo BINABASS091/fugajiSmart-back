@@ -3,6 +3,8 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+from django.db import transaction
+from django.db.models import F
 
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
@@ -103,26 +105,85 @@ class Batch(models.Model):
         return f"Batch {self.batch_number} - {self.status}"
 
 class BreedConfiguration(models.Model):
+    BREED_TYPE_CHOICES = [
+        ('LAYER', 'Layer'),
+        ('BROILER', 'Broiler'),
+        ('DUAL_PURPOSE', 'Dual-Purpose/Hybrid'),
+    ]
+    
+    HOUSING_SYSTEM_CHOICES = [
+        ('CAGE', 'Cage System'),
+        ('DEEP_LITTER', 'Deep Litter System'),
+        ('FREE_RANGE', 'Free Range System'),
+        ('SEMI_INTENSIVE', 'Semi-Intensive System'),
+    ]
+    
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     breed_name = models.CharField(max_length=255, unique=True)
-    breed_type = models.CharField(max_length=20)
+    breed_type = models.CharField(max_length=20, choices=BREED_TYPE_CHOICES)
     description = models.TextField(null=True, blank=True)
-    average_maturity_days = models.IntegerField(default=0)
-    production_lifespan_days = models.IntegerField(default=0)
-    average_weight_kg = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    eggs_per_year = models.IntegerField(default=0)
-    feed_consumption_daily_grams = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    space_requirement_sqm = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    temperature_min_celsius = models.DecimalField(max_digits=5, decimal_places=2, default=0)
-    temperature_max_celsius = models.DecimalField(max_digits=5, decimal_places=2, default=0)
-    humidity_min_percent = models.DecimalField(max_digits=5, decimal_places=2, default=0)
-    humidity_max_percent = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    
+    # Basic Characteristics
+    average_maturity_days = models.IntegerField(default=0, help_text="Days to reach maturity")
+    production_lifespan_days = models.IntegerField(default=0, help_text="Total production lifespan in days")
+    average_weight_kg = models.DecimalField(max_digits=10, decimal_places=2, default=0, help_text="Average adult weight in kg")
+    
+    # Layer-specific (if breed_type is LAYER)
+    eggs_per_year = models.IntegerField(default=0, help_text="Expected eggs per year")
+    onset_of_lay_weeks = models.IntegerField(null=True, blank=True, help_text="Age when laying begins (weeks)")
+    laying_duration_weeks = models.IntegerField(null=True, blank=True, help_text="Laying duration in weeks")
+    lighting_requirements_hours = models.IntegerField(null=True, blank=True, help_text="Required hours of light daily")
+    feed_before_lay_kg = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, help_text="Feed consumption before point of lay (kg)")
+    
+    # Broiler-specific (if breed_type is BROILER)
+    growth_rate_days = models.CharField(max_length=50, null=True, blank=True, help_text="Days to reach market weight (e.g., '28-42')")
+    feed_conversion_ratio = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, help_text="FCR - Feed needed for 1kg weight gain")
+    market_weight_kg = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, help_text="Target market weight in kg")
+    
+    # Dual-Purpose/Hybrid specific
+    egg_production_dual = models.IntegerField(null=True, blank=True, help_text="Eggs per year for dual-purpose")
+    body_weight_dual_kg = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, help_text="Body weight at 16-18 weeks for dual-purpose")
+    
+    # Feeding
+    feed_consumption_daily_grams = models.DecimalField(max_digits=10, decimal_places=2, default=0, help_text="Daily feed consumption in grams")
+    
+    # Housing & Space
+    space_requirement_sqm = models.DecimalField(max_digits=10, decimal_places=2, default=0, help_text="Space requirement per bird in sqm")
+    recommended_housing_system = models.CharField(max_length=20, choices=HOUSING_SYSTEM_CHOICES, null=True, blank=True, help_text="Best rearing system")
+    suitability = models.TextField(null=True, blank=True, help_text="Suitability description")
+    
+    # Environment
+    temperature_min_celsius = models.DecimalField(max_digits=5, decimal_places=2, default=0, help_text="Minimum temperature in Celsius")
+    temperature_max_celsius = models.DecimalField(max_digits=5, decimal_places=2, default=0, help_text="Maximum temperature in Celsius")
+    ideal_temperature_range = models.CharField(max_length=50, null=True, blank=True, help_text="Ideal temperature range (e.g., '20-24°C')")
+    humidity_min_percent = models.DecimalField(max_digits=5, decimal_places=2, default=0, help_text="Minimum humidity percentage")
+    humidity_max_percent = models.DecimalField(max_digits=5, decimal_places=2, default=0, help_text="Maximum humidity percentage")
+    ideal_humidity_range = models.CharField(max_length=50, null=True, blank=True, help_text="Ideal humidity range (e.g., '60-80%')")
+    
+    # Breed Examples
+    example_strains = models.TextField(null=True, blank=True, help_text="Example breeds/strains (comma-separated)")
+    
+    # Characteristics
+    characteristics = models.TextField(null=True, blank=True, help_text="Detailed characteristics")
+    hardiness = models.CharField(max_length=20, null=True, blank=True, help_text="Hardiness level: Low, Moderate, High")
+    growth_speed = models.CharField(max_length=20, null=True, blank=True, help_text="Growth speed: Slow, Moderate, Very Fast")
+    feed_efficiency = models.CharField(max_length=20, null=True, blank=True, help_text="Feed efficiency: High, Moderate")
+    
+    # Market Information
+    market_age_weeks = models.CharField(max_length=50, null=True, blank=True, help_text="Market age in weeks")
+    best_for = models.TextField(null=True, blank=True, help_text="Best suited for (commercial, rural, etc.)")
+    
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.breed_name
+    
+    class Meta:
+        verbose_name = "Breed Configuration"
+        verbose_name_plural = "Breed Configurations"
+        ordering = ['breed_type', 'breed_name']
 
 class BreedStage(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -421,11 +482,94 @@ class UserFeatureAccess(models.Model):
         self.max_devices = plan.max_devices
         self.save()
 class InventoryItem(models.Model):
+    # Main Categories
     CATEGORY_CHOICES = [
-        ('FEED', 'Feed'),
-        ('MEDICINE', 'Medicine'),
-        ('EQUIPMENT', 'Equipment'),
-        ('OTHER', 'Other'),
+        ('LIVE_BIRDS', 'Live Bird Inventory'),
+        ('FEED', 'Feed Inventory'),
+        ('MEDICINE', 'Medicine & Veterinary Inventory'),
+        ('SUPPLEMENTS', 'Supplements & Additives'),
+        ('EGGS', 'Egg Production Inventory'),
+        ('EQUIPMENT', 'Housing & Farm Equipment'),
+        ('SANITATION', 'Farm Sanitation & Biosecurity'),
+        ('UTILITIES', 'Utilities & Consumables'),
+        ('STORAGE', 'Storage & Packaging'),
+        ('TRANSPORT', 'Transport & Logistics'),
+        ('LABOR', 'Labor & Operational Items'),
+        ('SALES', 'Sales & Business Inventory'),
+        ('EMERGENCY', 'Disease & Emergency Stock'),
+        ('WATER', 'Water & Drinking System'),
+        ('HATCHERY', 'Hatchery Inventory'),
+        ('WASTE', 'Waste & By-Products'),
+        ('MACHINERY', 'Machinery & Tools'),
+        ('OFFICE', 'Office & Digital Inventory'),
+        ('FINANCIAL', 'Financial & Records Inventory'),
+    ]
+
+    # Subcategories for better organization
+    SUBCATEGORY_CHOICES = [
+        # Live Birds
+        ('DAY_OLD_CHICKS', 'Day-Old Chicks (DOC)'),
+        ('GROWER_BIRDS', 'Grower Birds'),
+        ('BROILERS', 'Broilers'),
+        ('LAYERS', 'Layers'),
+        ('BREEDERS', 'Breeders'),
+        ('PULLETS', 'Pullets'),
+        ('COCKERELS', 'Cockerels'),
+        ('PARENT_STOCK', 'Parent Stock'),
+        ('REPLACEMENT_STOCK', 'Replacement Stock'),
+        # Feed
+        ('COMPLETE_FEEDS', 'Complete Feeds'),
+        ('FEED_INGREDIENTS', 'Feed Ingredients (Raw Materials)'),
+        # Medicine
+        ('VACCINES', 'Vaccines'),
+        ('DRUGS_TREATMENTS', 'Drugs & Treatments'),
+        ('DISINFECTANTS', 'Disinfectants'),
+        # Supplements
+        ('SUPPLEMENTS', 'Supplements'),
+        # Eggs
+        ('EGG_TYPES', 'Egg Types'),
+        ('EGG_PACKAGING', 'Egg Packaging'),
+        # Equipment
+        ('POULTRY_HOUSE_EQUIPMENT', 'Poultry House Equipment'),
+        ('IOT_DEVICES', 'IoT & Smart Devices'),
+        # Sanitation
+        ('BIOSECURITY', 'Biosecurity Items'),
+        ('SANITATION_TOOLS', 'Sanitation Tools'),
+        # Utilities
+        ('UTILITIES', 'Utilities'),
+        ('CONSUMABLES', 'Consumables'),
+        # Storage
+        ('PACKAGING', 'Packaging Materials'),
+        ('STORAGE_EQUIPMENT', 'Storage Equipment'),
+        # Transport
+        ('TRANSPORT_EQUIPMENT', 'Transport Equipment'),
+        ('TRANSPORT_CONSUMABLES', 'Transport Consumables'),
+        # Labor
+        ('LABOR_EQUIPMENT', 'Labor Equipment'),
+        # Sales
+        ('BUSINESS_MATERIALS', 'Business Materials'),
+        # Emergency
+        ('EMERGENCY_STOCK', 'Emergency Stock'),
+        # Water
+        ('WATER_EQUIPMENT', 'Water Equipment'),
+        ('WATER_TREATMENT', 'Water Treatment'),
+        # Hatchery
+        ('HATCHERY_EQUIPMENT', 'Hatchery Equipment'),
+        ('HATCHERY_SENSORS', 'Hatchery Sensors'),
+        # Waste
+        ('WASTE_PRODUCTS', 'Waste Products'),
+        # Machinery
+        ('FARM_MACHINERY', 'Farm Machinery'),
+        ('FARM_TOOLS', 'Farm Tools'),
+        # Office
+        ('DIGITAL_EQUIPMENT', 'Digital Equipment'),
+        ('OFFICE_SUPPLIES', 'Office Supplies'),
+        # Financial
+        ('FINANCIAL_RECORDS', 'Financial Records'),
+        # Veterinary Tools
+        ('VETERINARY_TOOLS', 'Veterinary Tools'),
+        # Feed Supplements
+        ('FEED_SUPPLEMENTS', 'Feed Supplements'),
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -433,12 +577,34 @@ class InventoryItem(models.Model):
     farm = models.ForeignKey(Farm, on_delete=models.CASCADE, null=True, blank=True, related_name='inventory_items', help_text="Farm this inventory belongs to")
     name = models.CharField(max_length=255)
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
+    subcategory = models.CharField(max_length=50, choices=SUBCATEGORY_CHOICES, null=True, blank=True, help_text="Subcategory for better organization")
     quantity = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     unit = models.CharField(max_length=50)
     cost_per_unit = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     reorder_level = models.DecimalField(max_digits=10, decimal_places=2, default=10)
     supplier = models.CharField(max_length=255, null=True, blank=True)
     expiry_date = models.DateField(null=True, blank=True)
+    purchase_date = models.DateField(null=True, blank=True)
+    
+    # Tracking features
+    feed_type = models.CharField(max_length=100, null=True, blank=True, help_text="Type of feed (for FEED category)")
+    consumption_rate_per_day = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, help_text="Daily consumption rate")
+    course_days = models.IntegerField(null=True, blank=True, help_text="Course duration in days (for medicines)")
+    requires_refrigeration = models.BooleanField(default=False, help_text="Requires cold storage")
+    is_iot_device = models.BooleanField(default=False, help_text="IoT/Smart device")
+    is_emergency_stock = models.BooleanField(default=False, help_text="Emergency stock item")
+    
+    # Live bird tracking (if category is LIVE_BIRDS)
+    batch = models.ForeignKey('Batch', on_delete=models.SET_NULL, null=True, blank=True, related_name='inventory_birds', help_text="Associated batch for live birds")
+    age_days = models.IntegerField(null=True, blank=True, help_text="Age in days (for live birds)")
+    average_weight = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, help_text="Average weight in kg")
+    
+    # Additional metadata
+    barcode = models.CharField(max_length=100, null=True, blank=True, unique=True, help_text="Barcode/QR code for scanning")
+    batch_number = models.CharField(max_length=100, null=True, blank=True, help_text="Batch/lot number")
+    location = models.CharField(max_length=255, null=True, blank=True, help_text="Storage location")
+    notes = models.TextField(null=True, blank=True)
+    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -451,10 +617,12 @@ class InventoryTransaction(models.Model):
         ('USAGE', 'Stock Out (Usage)'),
         ('ADJUSTMENT', 'Adjustment'),
         ('RETURN', 'Return'),
+        ('WASTE', 'Wastage'),  # NEW: Explicit wastage tracking
     ]
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     item = models.ForeignKey(InventoryItem, on_delete=models.CASCADE, related_name='transactions')
+    batch = models.ForeignKey('Batch', on_delete=models.SET_NULL, null=True, blank=True, related_name='inventory_transactions', help_text="Associated batch/flock for this transaction")
     transaction_type = models.CharField(max_length=20, choices=TRANSACTION_TYPES)
     quantity_change = models.DecimalField(max_digits=10, decimal_places=2)
     unit_cost = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
@@ -463,18 +631,101 @@ class InventoryTransaction(models.Model):
     transaction_date = models.DateTimeField(default=timezone.now)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    @transaction.atomic
     def save(self, *args, **kwargs):
         # Update specific item quantity on save
         if not self.pk:  # Only on create
             if self.transaction_type in ['PURCHASE', 'RETURN']:
-                self.item.quantity += self.quantity_change
-            elif self.transaction_type == 'USAGE':
-                self.item.quantity -= self.quantity_change
+                InventoryItem.objects.filter(id=self.item.id).update(
+                    quantity=F('quantity') + self.quantity_change
+                )
+            elif self.transaction_type in ['USAGE', 'WASTE']:
+                # Both USAGE and WASTE reduce inventory
+                InventoryItem.objects.filter(id=self.item.id).update(
+                    quantity=F('quantity') - abs(self.quantity_change)
+                )
             elif self.transaction_type == 'ADJUSTMENT':
                 # For adjustment, quantity_change can be positive or negative
-                self.item.quantity += self.quantity_change
-            self.item.save()
+                InventoryItem.objects.filter(id=self.item.id).update(
+                    quantity=F('quantity') + self.quantity_change
+                )
+            # Refresh from DB to ensure local object has correct value if needed after super().save()
+            self.item.refresh_from_db()
         super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.transaction_type} - {self.item.name} ({self.quantity_change})"
+
+
+class FeedConsumption(models.Model):
+    """
+    Tracks feed consumption per batch/flock for accurate feed reporting
+    Links inventory usage to specific flocks
+    """
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    batch = models.ForeignKey('Batch', on_delete=models.CASCADE, related_name='feed_consumption')
+    inventory_item = models.ForeignKey(InventoryItem, on_delete=models.CASCADE, related_name='feed_consumption_records')
+    quantity_used = models.DecimalField(max_digits=10, decimal_places=2, help_text="Quantity consumed in item's unit")
+    unit_cost = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, help_text="Cost per unit at time of consumption")
+    total_cost = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, help_text="Total cost (auto-calculated)")
+    date = models.DateField(default=timezone.now, help_text="Date of consumption")
+    notes = models.TextField(null=True, blank=True, help_text="Additional notes about consumption")
+    transaction = models.ForeignKey(InventoryTransaction, on_delete=models.SET_NULL, null=True, blank=True, related_name='feed_consumption', help_text="Link to inventory transaction")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-date', '-created_at']
+        indexes = [
+            models.Index(fields=['batch', 'date']),
+            models.Index(fields=['inventory_item', 'date']),
+        ]
+
+    def save(self, *args, **kwargs):
+        # Auto-calculate total cost
+        if self.unit_cost and self.quantity_used:
+            self.total_cost = self.unit_cost * self.quantity_used
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.batch.batch_number} - {self.inventory_item.name} ({self.quantity_used} {self.inventory_item.unit}) on {self.date}"
+
+
+class InventoryAlert(models.Model):
+    """
+    Tracks inventory alerts for low stock, expiry warnings, etc.
+    """
+    ALERT_TYPES = [
+        ('LOW_STOCK', 'Low Stock'),
+        ('EXPIRY_WARNING', 'Expiry Warning'),
+        ('EXPIRED', 'Expired'),
+        ('OUT_OF_STOCK', 'Out of Stock'),
+        ('HIGH_CONSUMPTION', 'High Consumption Rate'),
+    ]
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    item = models.ForeignKey(InventoryItem, on_delete=models.CASCADE, related_name='alerts')
+    alert_type = models.CharField(max_length=20, choices=ALERT_TYPES)
+    message = models.CharField(max_length=255, help_text="Human-readable alert message")
+    severity = models.CharField(max_length=10, choices=[('LOW', 'Low'), ('MEDIUM', 'Medium'), ('HIGH', 'High'), ('CRITICAL', 'Critical')], default='MEDIUM')
+    is_resolved = models.BooleanField(default=False)
+    resolved_at = models.DateTimeField(null=True, blank=True)
+    resolved_by = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True, blank=True, related_name='resolved_alerts')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['item', 'is_resolved']),
+            models.Index(fields=['alert_type', 'is_resolved']),
+        ]
+
+    def resolve(self, user=None):
+        """Mark alert as resolved"""
+        self.is_resolved = True
+        self.resolved_at = timezone.now()
+        if user:
+            self.resolved_by = user
+        self.save()
+
+    def __str__(self):
+        return f"{self.alert_type} - {self.item.name} - {self.message}"

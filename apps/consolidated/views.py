@@ -12,7 +12,30 @@ from django.db.models import Q, Count, Sum, Avg
 from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiResponse, OpenApiParameter
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from .serializers import *
+from .serializers import (
+    UserSerializer,
+    RegisterSerializer,
+    CustomTokenObtainPairSerializer,
+    FarmerProfileSerializer,
+    FarmSerializer,
+    FarmMinimalSerializer,
+    BatchSerializer,
+    BatchDetailSerializer,
+    BreedConfigurationSerializer,
+    BreedStageSerializer,
+    BreedMilestoneSerializer,
+    DeviceSerializer,
+    ActivitySerializer,
+    AlertSerializer,
+    RecommendationSerializer,
+    SubscriptionPlanSerializer,
+    SubscriptionSerializer,
+    UserProfileSerializer,
+    InventoryItemSerializer,
+    InventoryTransactionSerializer,
+    FeedConsumptionSerializer,
+    InventoryAlertSerializer,
+)
 from .api_docs import (
     extend_schema_auth, 
     REGISTER_EXAMPLES, 
@@ -29,7 +52,24 @@ import requests
 import os
 from django.contrib.auth import get_user_model
 User = get_user_model()
-from .models import * 
+from .models import (
+    FarmerProfile,
+    Farm,
+    Batch,
+    BreedConfiguration,
+    BreedStage,
+    BreedMilestone,
+    Device,
+    Activity,
+    Alert,
+    Recommendation,
+    Subscription,
+    UserFeatureAccess,
+    InventoryItem,
+    InventoryTransaction,
+    FeedConsumption,
+    InventoryAlert,
+)
 from .authentication import set_jwt_cookies
 
 class GoogleLoginView(APIView):
@@ -619,28 +659,60 @@ class HealthViewSet(viewsets.ViewSet):
 class InventoryItemViewSet(viewsets.ModelViewSet):
     serializer_class = InventoryItemSerializer
     permission_classes = [permissions.IsAuthenticated]
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    filterset_fields = ['category']
-    search_fields = ['name', 'category']
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['category', 'subcategory', 'farm', 'is_iot_device', 'is_emergency_stock', 'requires_refrigeration']
+    search_fields = ['name', 'category', 'subcategory', 'barcode', 'batch_number', 'location', 'supplier']
+    ordering_fields = ['name', 'quantity', 'cost_per_unit', 'created_at', 'updated_at', 'expiry_date']
+    ordering = ['-created_at']
     pagination_class = None
 
     def get_queryset(self):
         user = self.request.user
+        queryset = InventoryItem.objects.select_related('farmer', 'farm', 'batch')
+        
         if user.role == 'FARMER':
-            return InventoryItem.objects.filter(farmer__user=user)
+            queryset = queryset.filter(farmer__user=user)
         elif user.role == 'ADMIN':
-            return InventoryItem.objects.all()
-        return InventoryItem.objects.none()
+            queryset = queryset.all()
+        else:
+            queryset = queryset.none()
+        
+        # Filter by farm if provided
+        farm_id = self.request.query_params.get('farm')
+        if farm_id:
+            queryset = queryset.filter(farm_id=farm_id)
+        
+        return queryset
 
     def perform_create(self, serializer):
         user = self.request.user
         if user.role == 'FARMER':
             # Ensure farmer profile exists
             farmer_profile = get_object_or_404(FarmerProfile, user=user)
-            serializer.save(farmer=farmer_profile)
+            data = serializer.validated_data
+            
+            # Handle farm assignment if provided
+            farm_id = self.request.data.get('farm')
+            if farm_id:
+                try:
+                    farm = Farm.objects.get(id=farm_id, farmer=farmer_profile)
+                    data['farm'] = farm
+                except Farm.DoesNotExist:
+                    pass
+            
+            # Handle batch assignment if provided
+            batch_id = self.request.data.get('batch')
+            if batch_id:
+                try:
+                    batch = Batch.objects.get(id=batch_id, farm__farmer=farmer_profile)
+                    data['batch'] = batch
+                except Batch.DoesNotExist:
+                    pass
+            
+            serializer.save(farmer=farmer_profile, **data)
         else:
-            # For admin, might need to pass farmer ID in request, but for now basic support
-            pass
+            # For admin, might need to pass farmer ID in request
+            serializer.save()
 
 class InventoryTransactionViewSet(viewsets.ModelViewSet):
     serializer_class = InventoryTransactionSerializer
@@ -648,12 +720,130 @@ class InventoryTransactionViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ['item', 'transaction_type']
     ordering_fields = ['transaction_date', 'created_at']
+    ordering = ['-transaction_date', '-created_at']
     pagination_class = None
 
     def get_queryset(self):
         user = self.request.user
+        queryset = InventoryTransaction.objects.select_related('item', 'item__farmer', 'item__farm')
+        
         if user.role == 'FARMER':
-            return InventoryTransaction.objects.filter(item__farmer__user=user)
+            queryset = queryset.filter(item__farmer__user=user)
         elif user.role == 'ADMIN':
-            return InventoryTransaction.objects.all()
-        return InventoryTransaction.objects.none()
+            queryset = queryset.all()
+        else:
+            queryset = queryset.none()
+        
+        # Filter by item if provided
+        item_id = self.request.query_params.get('item')
+        if item_id:
+            queryset = queryset.filter(item_id=item_id)
+        
+        # Filter by batch if provided
+        batch_id = self.request.query_params.get('batch')
+        if batch_id:
+            queryset = queryset.filter(batch_id=batch_id)
+        
+        return queryset
+
+    def perform_create(self, serializer):
+        """Handle batch assignment for transactions"""
+        user = self.request.user
+        data = serializer.validated_data
+        
+        # Handle batch assignment if provided
+        batch_id = self.request.data.get('batch')
+        if batch_id and user.role == 'FARMER':
+            try:
+                farmer_profile = get_object_or_404(FarmerProfile, user=user)
+                batch = Batch.objects.get(id=batch_id, farm__farmer=farmer_profile)
+                data['batch'] = batch
+            except Batch.DoesNotExist:
+                pass
+        
+        serializer.save(**data)
+
+
+class FeedConsumptionViewSet(viewsets.ModelViewSet):
+    serializer_class = FeedConsumptionSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filterset_fields = ['batch', 'inventory_item', 'date']
+    ordering_fields = ['date', 'created_at']
+    ordering = ['-date', '-created_at']
+    pagination_class = None
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = FeedConsumption.objects.select_related('batch', 'batch__farm', 'inventory_item', 'transaction')
+        
+        if user.role == 'FARMER':
+            queryset = queryset.filter(batch__farm__farmer__user=user)
+        elif user.role == 'ADMIN':
+            queryset = queryset.all()
+        else:
+            queryset = queryset.none()
+        
+        # Filter by batch if provided
+        batch_id = self.request.query_params.get('batch')
+        if batch_id:
+            queryset = queryset.filter(batch_id=batch_id)
+        
+        # Filter by inventory item if provided
+        item_id = self.request.query_params.get('inventory_item')
+        if item_id:
+            queryset = queryset.filter(inventory_item_id=item_id)
+        
+        return queryset
+
+    def perform_create(self, serializer):
+        """Ensure batch belongs to farmer"""
+        user = self.request.user
+        if user.role == 'FARMER':
+            farmer_profile = get_object_or_404(FarmerProfile, user=user)
+            batch = serializer.validated_data.get('batch')
+            if batch and batch.farm.farmer != farmer_profile:
+                from rest_framework.exceptions import ValidationError
+                raise ValidationError({"batch": "Batch does not belong to your farm"})
+        serializer.save()
+
+
+class InventoryAlertViewSet(viewsets.ModelViewSet):
+    serializer_class = InventoryAlertSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
+    filterset_fields = ['item', 'alert_type', 'severity', 'is_resolved']
+    ordering_fields = ['created_at', 'severity']
+    ordering = ['-created_at']
+    pagination_class = None
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = InventoryAlert.objects.select_related('item', 'item__farmer', 'resolved_by')
+        
+        if user.role == 'FARMER':
+            queryset = queryset.filter(item__farmer__user=user)
+        elif user.role == 'ADMIN':
+            queryset = queryset.all()
+        else:
+            queryset = queryset.none()
+        
+        # Filter by resolved status if provided
+        is_resolved = self.request.query_params.get('is_resolved')
+        if is_resolved is not None:
+            queryset = queryset.filter(is_resolved=is_resolved.lower() == 'true')
+        
+        # Filter by alert type if provided
+        alert_type = self.request.query_params.get('alert_type')
+        if alert_type:
+            queryset = queryset.filter(alert_type=alert_type)
+        
+        return queryset
+
+    @action(detail=True, methods=['post'])
+    def resolve(self, request, pk=None):
+        """Resolve an alert"""
+        alert = self.get_object()
+        alert.resolve(user=request.user)
+        serializer = self.get_serializer(alert)
+        return Response(serializer.data)
