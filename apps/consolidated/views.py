@@ -17,25 +17,31 @@ from .serializers import (
     RegisterSerializer,
     CustomTokenObtainPairSerializer,
     FarmerProfileSerializer,
+    UserProfileSerializer,
     FarmSerializer,
-    FarmMinimalSerializer,
     BatchSerializer,
     BatchDetailSerializer,
     BreedConfigurationSerializer,
     BreedStageSerializer,
     BreedMilestoneSerializer,
-    DeviceSerializer,
-    ActivitySerializer,
-    AlertSerializer,
-    RecommendationSerializer,
-    SubscriptionPlanSerializer,
-    SubscriptionSerializer,
-    UserProfileSerializer,
     InventoryItemSerializer,
     InventoryTransactionSerializer,
     FeedConsumptionSerializer,
     InventoryAlertSerializer,
+    ActivitySerializer,
+    AlertSerializer,
+    RecommendationSerializer,
+    DeviceSerializer,
+    SubscriptionSerializer,
     HealthRecordSerializer,
+    MedicineInventorySerializer,
+    MedicineAdministrationSerializer,
+    EquipmentInventorySerializer,
+    LaborRecordSerializer,
+    ServiceExpenseSerializer,
+    HealthAlertSerializer,
+    EggInventorySerializer,
+    EggSaleSerializer,
 )
 from .api_docs import (
     extend_schema_auth, 
@@ -71,6 +77,14 @@ from .models import (
     FeedConsumption,
     InventoryAlert,
     HealthRecord,
+    MedicineInventory,
+    MedicineAdministration,
+    EquipmentInventory,
+    LaborRecord,
+    ServiceExpense,
+    HealthAlert,
+    EggInventory,
+    EggSale,
 )
 from .authentication import set_jwt_cookies
 
@@ -896,3 +910,90 @@ class InventoryAlertViewSet(viewsets.ModelViewSet):
         alert.resolve(user=request.user)
         serializer = self.get_serializer(alert)
         return Response(serializer.data)
+
+# New Inventory ViewSets
+
+class MedicineInventoryViewSet(viewsets.ModelViewSet):
+    queryset = MedicineInventory.objects.all()
+    serializer_class = MedicineInventorySerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['medicine_type', 'vaccine_type', 'administration_route']
+    search_fields = ['inventory_item__name', 'purpose']
+
+    def get_queryset(self):
+        return self.queryset.filter(inventory_item__farmer__user=self.request.user)
+
+class MedicineAdministrationViewSet(viewsets.ModelViewSet):
+    queryset = MedicineAdministration.objects.all()
+    serializer_class = MedicineAdministrationSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['batch', 'medicine']
+
+    def get_queryset(self):
+        return self.queryset.filter(batch__farm__farmer__user=self.request.user)
+
+class EquipmentInventoryViewSet(viewsets.ModelViewSet):
+    queryset = EquipmentInventory.objects.all()
+    serializer_class = EquipmentInventorySerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['equipment_type', 'condition']
+    search_fields = ['inventory_item__name', 'serial_number']
+
+    def get_queryset(self):
+        return self.queryset.filter(inventory_item__farmer__user=self.request.user)
+
+class LaborRecordViewSet(viewsets.ModelViewSet):
+    queryset = LaborRecord.objects.all()
+    serializer_class = LaborRecordSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['worker_type', 'payment_frequency', 'is_active', 'farm']
+    search_fields = ['worker_name', 'role']
+
+    def get_queryset(self):
+        return self.queryset.filter(farmer__user=self.request.user)
+
+class ServiceExpenseViewSet(viewsets.ModelViewSet):
+    queryset = ServiceExpense.objects.all()
+    serializer_class = ServiceExpenseSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['service_type', 'farm', 'service_date']
+    search_fields = ['service_provider', 'description']
+
+    def get_queryset(self):
+        return self.queryset.filter(farmer__user=self.request.user)
+
+class HealthAlertViewSet(viewsets.ModelViewSet):
+    queryset = HealthAlert.objects.all()
+    serializer_class = HealthAlertSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['batch', 'alert_type', 'severity', 'resolved']
+
+    def get_queryset(self):
+        return self.queryset.filter(batch__farm__farmer__user=self.request.user)
+
+class EggInventoryViewSet(viewsets.ModelViewSet):
+    queryset = EggInventory.objects.all()
+    serializer_class = EggInventorySerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['batch', 'collection_date', 'grade', 'quality']
+
+    def get_queryset(self):
+        return self.queryset.filter(batch__farm__farmer__user=self.request.user)
+
+class EggSaleViewSet(viewsets.ModelViewSet):
+    queryset = EggSale.objects.all()
+    serializer_class = EggSaleSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['customer_type', 'payment_status', 'sale_date']
+    search_fields = ['customer_name', 'customer_phone', 'invoice_number']
+
+    def get_queryset(self):
+        return self.queryset.filter(egg_inventory__batch__farm__farmer__user=self.request.user)

@@ -25,7 +25,166 @@ from .models import (
     FeedConsumption,
     InventoryAlert,
     HealthRecord,
+    MedicineInventory,
+    MedicineAdministration,
+    EquipmentInventory,
+    LaborRecord,
+    ServiceExpense,
+    HealthAlert,
+    EggInventory,
+    EggSale,
 )
+
+
+# Base Inventory Serializers
+class InventoryItemSerializer(serializers.ModelSerializer):
+    farmer_id = serializers.UUIDField(source='farmer.id', read_only=True)
+    farm_id = serializers.UUIDField(source='farm.id', read_only=True, allow_null=True)
+    batch_id = serializers.UUIDField(source='batch.id', read_only=True, allow_null=True)
+    
+    class Meta:
+        model = InventoryItem
+        fields = '__all__'
+        read_only_fields = ['id', 'created_at', 'updated_at', 'farmer_id']
+        extra_kwargs = {
+            'farmer': {'write_only': True, 'required': False},
+            'farm': {'write_only': True, 'required': False},
+            'batch': {'write_only': True, 'required': False},
+        }
+    
+    def validate_category(self, value):
+        """Validate category is in allowed choices"""
+        valid_categories = [choice[0] for choice in InventoryItem.CATEGORY_CHOICES]
+        if value not in valid_categories:
+            raise serializers.ValidationError(f"Invalid category. Must be one of: {', '.join(valid_categories)}")
+        return value
+    
+    def validate_subcategory(self, value):
+        """Validate subcategory if provided"""
+        if value:
+            valid_subcategories = [choice[0] for choice in InventoryItem.SUBCATEGORY_CHOICES]
+            if value not in valid_subcategories:
+                raise serializers.ValidationError(f"Invalid subcategory. Must be one of: {', '.join(valid_subcategories)}")
+        return value
+
+class InventoryTransactionSerializer(serializers.ModelSerializer):
+    item_name = serializers.CharField(source='item.name', read_only=True)
+    batch_number = serializers.CharField(source='batch.batch_number', read_only=True, allow_null=True)
+    batch_id = serializers.UUIDField(source='batch.id', read_only=True, allow_null=True)
+    
+    class Meta:
+        model = InventoryTransaction
+        fields = '__all__'
+        read_only_fields = ['id', 'created_at', 'total_cost', 'batch_id', 'batch_number']
+        extra_kwargs = {
+            'batch': {'write_only': True, 'required': False},
+        }
+
+    def create(self, validated_data):
+        # Calculate total cost if unit cost is provided
+        if 'unit_cost' in validated_data and 'quantity_change' in validated_data:
+            validated_data['total_cost'] = validated_data['unit_cost'] * validated_data['quantity_change']
+        return super().create(validated_data)
+
+class FeedConsumptionSerializer(serializers.ModelSerializer):
+    batch_number = serializers.CharField(source='batch.batch_number', read_only=True)
+    batch_id = serializers.UUIDField(source='batch.id', read_only=True)
+    item_name = serializers.CharField(source='inventory_item.name', read_only=True)
+    item_id = serializers.UUIDField(source='inventory_item.id', read_only=True)
+    
+    class Meta:
+        model = FeedConsumption
+        fields = '__all__'
+        read_only_fields = ['id', 'created_at', 'batch_id', 'item_id']
+        extra_kwargs = {
+            'batch': {'write_only': True, 'required': False},
+            'inventory_item': {'write_only': True, 'required': False},
+        }
+
+class InventoryAlertSerializer(serializers.ModelSerializer):
+    item_name = serializers.CharField(source='item.name', read_only=True)
+    
+    class Meta:
+        model = InventoryAlert
+        fields = '__all__'
+
+# Specialized Inventory Serializers
+
+class MedicineInventorySerializer(serializers.ModelSerializer):
+    inventory_item_details = InventoryItemSerializer(source='inventory_item', read_only=True)
+    
+    class Meta:
+        model = MedicineInventory
+        fields = '__all__'
+
+class MedicineAdministrationSerializer(serializers.ModelSerializer):
+    medicine_name = serializers.CharField(source='medicine.inventory_item.name', read_only=True)
+    batch_name = serializers.CharField(source='batch.batch_name', read_only=True)
+    administered_by_name = serializers.CharField(source='administered_by.get_full_name', read_only=True)
+    
+    class Meta:
+        model = MedicineAdministration
+        fields = '__all__'
+
+class EquipmentInventorySerializer(serializers.ModelSerializer):
+    inventory_item_details = InventoryItemSerializer(source='inventory_item', read_only=True)
+    
+    class Meta:
+        model = EquipmentInventory
+        fields = '__all__'
+
+class LaborRecordSerializer(serializers.ModelSerializer):
+    farmer_name = serializers.CharField(source='farmer.business_name', read_only=True)
+    farm_name = serializers.CharField(source='farm.name', read_only=True)
+    
+    class Meta:
+        model = LaborRecord
+        fields = '__all__'
+
+class ServiceExpenseSerializer(serializers.ModelSerializer):
+    farmer_name = serializers.CharField(source='farmer.business_name', read_only=True)
+    farm_name = serializers.CharField(source='farm.name', read_only=True)
+    
+    class Meta:
+        model = ServiceExpense
+        fields = '__all__'
+
+class HealthRecordSerializer(serializers.ModelSerializer):
+    batch_number = serializers.CharField(source='affected_batch.batch_number', read_only=True)
+    farm_name = serializers.CharField(source='farm.name', read_only=True)
+    
+    class Meta:
+        model = HealthRecord
+        fields = '__all__'
+        read_only_fields = ['id', 'created_at', 'updated_at', 'farm_name', 'batch_number']
+        extra_kwargs = {
+            'farm': {'write_only': True, 'required': True},
+            'affected_batch': {'write_only': True, 'required': False},
+            'reported_by': {'write_only': True, 'required': False}
+        }
+
+class HealthAlertSerializer(serializers.ModelSerializer):
+    batch_name = serializers.CharField(source='batch.batch_name', read_only=True)
+    resolved_by_name = serializers.CharField(source='resolved_by.get_full_name', read_only=True)
+    
+    class Meta:
+        model = HealthAlert
+        fields = '__all__'
+
+class EggInventorySerializer(serializers.ModelSerializer):
+    batch_name = serializers.CharField(source='batch.batch_name', read_only=True)
+    
+    class Meta:
+        model = EggInventory
+        fields = '__all__'
+
+class EggSaleSerializer(serializers.ModelSerializer):
+    egg_inventory_details = EggInventorySerializer(source='egg_inventory', read_only=True)
+    
+    class Meta:
+        model = EggSale
+        fields = '__all__'
+
 
 # Constants
 DEVICE_TYPE_LABELS = {
@@ -591,121 +750,3 @@ class UserProfileSerializer(serializers.Serializer):
             
         return instance
 
-class InventoryItemSerializer(serializers.ModelSerializer):
-    farmer_id = serializers.UUIDField(source='farmer.id', read_only=True)
-    farm_id = serializers.UUIDField(source='farm.id', read_only=True, allow_null=True)
-    batch_id = serializers.UUIDField(source='batch.id', read_only=True, allow_null=True)
-    
-    class Meta:
-        model = InventoryItem
-        fields = '__all__'
-        read_only_fields = ['id', 'created_at', 'updated_at', 'farmer_id']
-        extra_kwargs = {
-            'farmer': {'write_only': True, 'required': False},
-            'farm': {'write_only': True, 'required': False},
-            'batch': {'write_only': True, 'required': False},
-        }
-    
-    def validate_category(self, value):
-        """Validate category is in allowed choices"""
-        valid_categories = [choice[0] for choice in InventoryItem.CATEGORY_CHOICES]
-        if value not in valid_categories:
-            raise serializers.ValidationError(f"Invalid category. Must be one of: {', '.join(valid_categories)}")
-        return value
-    
-    def validate_subcategory(self, value):
-        """Validate subcategory if provided"""
-        if value:
-            valid_subcategories = [choice[0] for choice in InventoryItem.SUBCATEGORY_CHOICES]
-            if value not in valid_subcategories:
-                raise serializers.ValidationError(f"Invalid subcategory. Must be one of: {', '.join(valid_subcategories)}")
-        return value
-
-class InventoryTransactionSerializer(serializers.ModelSerializer):
-    item_name = serializers.CharField(source='item.name', read_only=True)
-    batch_number = serializers.CharField(source='batch.batch_number', read_only=True, allow_null=True)
-    batch_id = serializers.UUIDField(source='batch.id', read_only=True, allow_null=True)
-    
-    class Meta:
-        model = InventoryTransaction
-        fields = '__all__'
-        read_only_fields = ['id', 'created_at', 'total_cost', 'batch_id', 'batch_number']
-        extra_kwargs = {
-            'batch': {'write_only': True, 'required': False},
-        }
-
-    def create(self, validated_data):
-        # Calculate total cost if unit cost is provided
-        if 'unit_cost' in validated_data and 'quantity_change' in validated_data:
-            validated_data['total_cost'] = validated_data['unit_cost'] * validated_data['quantity_change']
-        return super().create(validated_data)
-
-
-class FeedConsumptionSerializer(serializers.ModelSerializer):
-    batch_number = serializers.CharField(source='batch.batch_number', read_only=True)
-    batch_id = serializers.UUIDField(source='batch.id', read_only=True)
-    item_name = serializers.CharField(source='inventory_item.name', read_only=True)
-    item_id = serializers.UUIDField(source='inventory_item.id', read_only=True)
-    item_unit = serializers.CharField(source='inventory_item.unit', read_only=True)
-    transaction_id = serializers.UUIDField(source='transaction.id', read_only=True, allow_null=True)
-    
-    class Meta:
-        model = FeedConsumption
-        fields = '__all__'
-        read_only_fields = ['id', 'created_at', 'total_cost', 'batch_id', 'batch_number', 'item_id', 'item_name', 'item_unit', 'transaction_id']
-        extra_kwargs = {
-            'batch': {'write_only': True},
-            'inventory_item': {'write_only': True},
-            'transaction': {'write_only': True, 'required': False},
-        }
-
-    def validate(self, attrs):
-        # Validate batch belongs to farmer
-        if 'batch' in attrs:
-            batch = attrs['batch']
-            # This will be checked in the viewset
-        return attrs
-
-    def create(self, validated_data):
-        # Auto-calculate total cost if not provided
-        if 'total_cost' not in validated_data or validated_data.get('total_cost') is None:
-            if 'unit_cost' in validated_data and 'quantity_used' in validated_data:
-                if validated_data['unit_cost'] and validated_data['quantity_used']:
-                    validated_data['total_cost'] = validated_data['unit_cost'] * validated_data['quantity_used']
-        return super().create(validated_data)
-
-
-class InventoryAlertSerializer(serializers.ModelSerializer):
-    item_name = serializers.CharField(source='item.name', read_only=True)
-    item_id = serializers.UUIDField(source='item.id', read_only=True)
-    resolved_by_email = serializers.CharField(source='resolved_by.email', read_only=True, allow_null=True)
-    resolved_by_id = serializers.UUIDField(source='resolved_by.id', read_only=True, allow_null=True)
-    
-    class Meta:
-        model = InventoryAlert
-        fields = '__all__'
-        read_only_fields = ['id', 'created_at', 'resolved_at', 'item_id', 'item_name', 'resolved_by_id', 'resolved_by_email']
-        extra_kwargs = {
-            'resolved_by': {'write_only': True, 'required': False},
-        }
-
-    def validate_alert_type(self, value):
-        """Validate alert type is in allowed choices"""
-        valid_types = [choice[0] for choice in InventoryAlert.ALERT_TYPES]
-        if value not in valid_types:
-            raise serializers.ValidationError(f"Invalid alert type. Must be one of: {', '.join(valid_types)}")
-        return value
-
-class HealthRecordSerializer(serializers.ModelSerializer):
-    batch_number = serializers.CharField(source='affected_batch.batch_number', read_only=True)
-    farm_name = serializers.CharField(source='farm.name', read_only=True)
-    
-    class Meta:
-        model = HealthRecord
-        fields = '__all__'
-        read_only_fields = ['id', 'created_at', 'updated_at', 'farm_name', 'batch_number']
-        extra_kwargs = {
-            'farm': {'write_only': True, 'required': True},
-            'affected_batch': {'write_only': True, 'required': False},
-            'reported_by': {'write_only': True, 'required': False}
-        }

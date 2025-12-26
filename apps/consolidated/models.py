@@ -517,15 +517,51 @@ class InventoryItem(models.Model):
         ('COCKERELS', 'Cockerels'),
         ('PARENT_STOCK', 'Parent Stock'),
         ('REPLACEMENT_STOCK', 'Replacement Stock'),
-        # Feed
+        # Feed - Enhanced with specific types
         ('COMPLETE_FEEDS', 'Complete Feeds'),
         ('FEED_INGREDIENTS', 'Feed Ingredients (Raw Materials)'),
+        ('CHICK_STARTER_MASH', 'Chick Starter Mash'),
+        ('GROWER_MASH', 'Grower Mash'),
+        ('LAYER_MASH', 'Layer Mash'),
+        ('FINISHER_FEED', 'Finisher Feed'),
+        ('BROILER_CONCENTRATE', 'Broiler Concentrate'),
+        ('PREMIX', 'Premix'),
+        ('CRUSHED_MAIZE', 'Crushed Maize'),
+        ('SOYA_MEAL', 'Soya Meal'),
+        ('FISH_MEAL', 'Fish Meal'),
         # Medicine
         ('VACCINES', 'Vaccines'),
         ('DRUGS_TREATMENTS', 'Drugs & Treatments'),
         ('DISINFECTANTS', 'Disinfectants'),
         # Supplements
         ('SUPPLEMENTS', 'Supplements'),
+        # Eggs
+        ('EGG_TYPES', 'Egg Types'),
+        ('EGG_PACKAGING', 'Egg Packaging'),
+        # Equipment
+        ('POULTRY_HOUSE_EQUIPMENT', 'Poultry House Equipment'),
+        ('IOT_DEVICES', 'IoT & Smart Devices'),
+        # Sanitation
+        ('BIOSECURITY', 'Biosecurity Items'),
+        ('SANITATION_TOOLS', 'Sanitation Tools'),
+        # Utilities - Enhanced with specific types
+        ('UTILITIES', 'Utilities'),
+        ('CONSUMABLES', 'Consumables'),
+        ('BEDDING', 'Bedding Materials (Sawdust, Rice Husks)'),
+        ('LIME', 'Lime/Disinfectant Powder'),
+        ('CLEANING_MATERIALS', 'Cleaning Materials'),
+        ('FUEL', 'Fuel/Energy'),
+        ('WATER_BILLS', 'Water Bills/Utilities'),
+        ('ELECTRICITY', 'Electricity/Power'),
+        # Storage
+        ('PACKAGING', 'Packaging Materials'),
+        ('STORAGE_EQUIPMENT', 'Storage Equipment'),
+        # Transport
+        ('TRANSPORT_EQUIPMENT', 'Transport Equipment'),
+        ('TRANSPORT_CONSUMABLES', 'Transport Consumables'),
+        # Labor
+        ('LABOR_EQUIPMENT', 'Labor Equipment'),
+        # Sales
         # Eggs
         ('EGG_TYPES', 'Egg Types'),
         ('EGG_PACKAGING', 'Egg Packaging'),
@@ -776,3 +812,366 @@ class HealthRecord(models.Model):
 
     def __str__(self):
         return f"{self.record_type} - {self.date}"
+# Enhanced Inventory Models for FugajiSmart
+# Append these models to the end of apps/consolidated/models.py
+
+# ==================== MEDICINE & VACCINE INVENTORY ====================
+
+class MedicineInventory(models.Model):
+    """Dedicated model for medicine and vaccine tracking"""
+    
+    MEDICINE_TYPES = [
+        ('ANTIBIOTIC', 'Antibiotics'),
+        ('VITAMIN', 'Vitamins'),
+        ('DEWORMER', 'Dewormers'),
+        ('ANTI_STRESS', 'Anti-stress Solutions'),
+        ('ELECTROLYTE', 'Electrolytes'),
+        ('DISINFECTANT', 'Disinfectants'),
+    ]
+    
+    VACCINE_TYPES = [
+        ('NEWCASTLE', 'Newcastle Disease'),
+        ('GUMBORO', 'Gumboro (IBD)'),
+        ('FOWL_POX', 'Fowl Pox'),
+        ('MAREKS', 'Marek\'s Disease'),
+        ('IB_VACCINE', 'Infectious Bronchitis'),
+        ('FOWL_TYPHOID', 'Fowl Typhoid'),
+        ('LASOTA', 'Lasota (Newcastle Booster)'),
+        ('HITCHNER_B1', 'Hitchner B1'),
+    ]
+    
+    ADMINISTRATION_ROUTES = [
+        ('ORAL', 'Oral/Drinking Water'),
+        ('INJECTION_IM', 'Intramuscular Injection'),
+        ('INJECTION_SC', 'Subcutaneous Injection'),
+        ('EYE_DROP', 'Eye Drop'),
+        ('WING_STAB', 'Wing Stab'),
+        ('SPRAY', 'Spray'),
+    ]
+    
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    inventory_item = models.OneToOneField('InventoryItem', on_delete=models.CASCADE, related_name='medicine_details')
+    medicine_type = models.CharField(max_length=20, choices=MEDICINE_TYPES, null=True, blank=True)
+    vaccine_type = models.CharField(max_length=20, choices=VACCINE_TYPES, null=True, blank=True)
+    purpose = models.TextField(help_text="Purpose/indication for use")
+    dosage = models.CharField(max_length=255, help_text="Recommended dosage (e.g., 1ml per liter)")
+    administration_route = models.CharField(max_length=20, choices=ADMINISTRATION_ROUTES, default='ORAL')
+    withdrawal_period_days = models.IntegerField(null=True, blank=True, help_text="Days before slaughter/egg consumption")
+    storage_temperature = models.CharField(max_length=50, null=True, blank=True, help_text="e.g., 2-8°C, Room Temperature")
+    manufacturer = models.CharField(max_length=255, null=True, blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = 'Medicine/Vaccine Inventory'
+        verbose_name_plural = 'Medicine/Vaccine Inventories'
+    
+    def __str__(self):
+        return f"{self.inventory_item.name} - {self.get_medicine_type_display() or self.get_vaccine_type_display()}"
+
+
+class MedicineAdministration(models.Model):
+    """Track medicine/vaccine administration to flocks"""
+    
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    medicine = models.ForeignKey(MedicineInventory, on_delete=models.CASCADE, related_name='administrations')
+    batch = models.ForeignKey('Batch', on_delete=models.CASCADE, related_name='medicine_records')
+    administered_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='medicine_administrations')
+    administered_date = models.DateTimeField(default=timezone.now)
+    dosage_given = models.CharField(max_length=255, help_text="Actual dosage administered")
+    number_of_birds = models.IntegerField(help_text="Number of birds treated")
+    reason = models.TextField(help_text="Reason for administration (disease, prevention, etc.)")
+    notes = models.TextField(null=True, blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-administered_date']
+        verbose_name = 'Medicine Administration Record'
+        verbose_name_plural = 'Medicine Administration Records'
+    
+    def __str__(self):
+        return f"{self.medicine.inventory_item.name} - {self.batch.batch_name} ({self.administered_date.date()})"
+
+
+# ==================== EQUIPMENT & TOOLS INVENTORY ====================
+
+class EquipmentInventory(models.Model):
+    """Track farm equipment and tools"""
+    
+    EQUIPMENT_TYPES = [
+        ('FEEDER', 'Feeders'),
+        ('DRINKER', 'Drinkers'),
+        ('BROODER', 'Brooders'),
+        ('INCUBATOR', 'Incubators'),
+        ('EGG_TRAY', 'Egg Trays'),
+        ('CRATE', 'Crates'),
+        ('WEIGHING_SCALE', 'Weighing Scales'),
+        ('WATER_TANK', 'Water Tanks'),
+        ('HEATER', 'Heaters'),
+        ('FAN', 'Fans/Ventilation'),
+        ('GENERATOR', 'Generator'),
+        ('SPRAYER', 'Sprayers'),
+        ('THERMOMETER', 'Thermometers'),
+        ('HYGROMETER', 'Hygrometers'),
+    ]
+    
+    CONDITION_CHOICES = [
+        ('EXCELLENT', 'Excellent'),
+        ('GOOD', 'Good'),
+        ('FAIR', 'Fair'),
+        ('DAMAGED', 'Damaged'),
+        ('NEEDS_REPAIR', 'Needs Repair'),
+        ('RETIRED', 'Retired'),
+    ]
+    
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    inventory_item = models.OneToOneField('InventoryItem', on_delete=models.CASCADE, related_name='equipment_details')
+    equipment_type = models.CharField(max_length=20, choices=EQUIPMENT_TYPES)
+    condition = models.CharField(max_length=20, choices=CONDITION_CHOICES, default='GOOD')
+    purchase_cost = models.DecimalField(max_digits=10, decimal_places=2)
+    expected_lifespan_years = models.DecimalField(max_digits=5, decimal_places=1, help_text="Expected lifespan in years")
+    installation_date = models.DateField(null=True, blank=True)
+    last_maintenance_date = models.DateField(null=True, blank=True)
+    next_maintenance_date = models.DateField(null=True, blank=True)
+    replacement_alert = models.BooleanField(default=False, help_text="Alert when nearing end of lifespan")
+    warranty_expiry = models.DateField(null=True, blank=True)
+    serial_number = models.CharField(max_length=100, null=True, blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = 'Equipment Inventory'
+        verbose_name_plural = 'Equipment Inventories'
+    
+    def __str__(self):
+        return f"{self.inventory_item.name} - {self.get_condition_display()}"
+
+
+# ==================== LABOR & SERVICES ====================
+
+class LaborRecord(models.Model):
+    """Track farm workers and labor costs"""
+    
+    WORKER_TYPES = [
+        ('PERMANENT', 'Permanent Staff'),
+        ('CASUAL', 'Casual Labor'),
+        ('CONTRACT', 'Contract Worker'),
+    ]
+    
+    PAYMENT_FREQUENCY = [
+        ('DAILY', 'Daily'),
+        ('WEEKLY', 'Weekly'),
+        ('MONTHLY', 'Monthly'),
+    ]
+    
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    farmer = models.ForeignKey(FarmerProfile, on_delete=models.CASCADE, related_name='labor_records')
+    farm = models.ForeignKey(Farm, on_delete=models.CASCADE, null=True, blank=True, related_name='workers')
+    worker_name = models.CharField(max_length=255)
+    worker_type = models.CharField(max_length=20, choices=WORKER_TYPES)
+    phone_number = models.CharField(max_length=20, null=True, blank=True)
+    role = models.CharField(max_length=100, help_text="e.g., Farm Manager, Cleaner, Feeder")
+    payment_frequency = models.CharField(max_length=20, choices=PAYMENT_FREQUENCY)
+    wage_amount = models.DecimalField(max_digits=10, decimal_places=2, help_text="Wage amount per payment period")
+    start_date = models.DateField()
+    end_date = models.DateField(null=True, blank=True)
+    is_active = models.BooleanField(default=True)
+    notes = models.TextField(null=True, blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-start_date']
+        verbose_name = 'Labor Record'
+        verbose_name_plural = 'Labor Records'
+    
+    def __str__(self):
+        return f"{self.worker_name} - {self.role} ({self.get_worker_type_display()})"
+
+
+class ServiceExpense(models.Model):
+    """Track service expenses (vet, transport, etc.)"""
+    
+    SERVICE_TYPES = [
+        ('VETERINARY', 'Veterinary Services'),
+        ('TRANSPORT', 'Transport/Logistics'),
+        ('CONSULTATION', 'Consultation Fees'),
+        ('MAINTENANCE', 'Equipment Maintenance'),
+        ('CLEANING', 'Cleaning Services'),
+        ('LABORATORY', 'Laboratory/Testing Services'),
+        ('OTHER', 'Other Services'),
+    ]
+    
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    farmer = models.ForeignKey(FarmerProfile, on_delete=models.CASCADE, related_name='service_expenses')
+    farm = models.ForeignKey(Farm, on_delete=models.CASCADE, null=True, blank=True, related_name='service_expenses')
+    service_type = models.CharField(max_length=20, choices=SERVICE_TYPES)
+    service_provider = models.CharField(max_length=255)
+    description = models.TextField()
+    cost = models.DecimalField(max_digits=10, decimal_places=2)
+    service_date = models.DateField()
+    invoice_number = models.CharField(max_length=100, null=True, blank=True)
+    notes = models.TextField(null=True, blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-service_date']
+        verbose_name = 'Service Expense'
+        verbose_name_plural = 'Service Expenses'
+    
+    def __str__(self):
+        return f"{self.get_service_type_display()} - {self.service_provider} ({self.service_date})"
+
+
+# ==================== HEALTH ALERTS ====================
+
+class HealthAlert(models.Model):
+    """Automated health alerts based on flock performance"""
+    
+    ALERT_TYPES = [
+        ('ABNORMAL_MORTALITY', 'Abnormal Mortality Rate'),
+        ('EGG_DROP', 'Drop in Egg Production'),
+        ('FEED_INTAKE_LOW', 'Low Feed Intake'),
+        ('WATER_INTAKE_HIGH', 'Excessive Water Consumption'),
+        ('WEIGHT_LOSS', 'Weight Loss Detected'),
+        ('DISEASE_OUTBREAK', 'Potential Disease Outbreak'),
+    ]
+    
+    SEVERITY_LEVELS = [
+        ('LOW', 'Low'),
+        ('MEDIUM', 'Medium'),
+        ('HIGH', 'High'),
+        ('CRITICAL', 'Critical'),
+    ]
+    
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    batch = models.ForeignKey('Batch', on_delete=models.CASCADE, related_name='health_alerts')
+    alert_type = models.CharField(max_length=30, choices=ALERT_TYPES)
+    severity = models.CharField(max_length=10, choices=SEVERITY_LEVELS)
+    message = models.TextField()
+    detected_value = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, help_text="Actual value that triggered alert")
+    threshold_value = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, help_text="Threshold that was exceeded")
+    detected_at = models.DateTimeField(default=timezone.now)
+    resolved = models.BooleanField(default=False)
+    resolved_at = models.DateTimeField(null=True, blank=True)
+    resolved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='resolved_health_alerts')
+    resolution_notes = models.TextField(null=True, blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-detected_at']
+        verbose_name = 'Health Alert'
+        verbose_name_plural = 'Health Alerts'
+    
+    def __str__(self):
+        return f"{self.get_alert_type_display()} - {self.batch.batch_name} ({self.get_severity_display()})"
+
+
+# ==================== EGG INVENTORY & SALES ====================
+
+class EggInventory(models.Model):
+    """Detailed egg inventory and grading"""
+    
+    EGG_GRADES = [
+        ('SMALL', 'Small (< 50g)'),
+        ('MEDIUM', 'Medium (50-60g)'),
+        ('LARGE', 'Large (60-70g)'),
+        ('EXTRA_LARGE', 'Extra Large (> 70g)'),
+    ]
+    
+    EGG_QUALITY = [
+        ('GRADE_A', 'Grade A (Premium)'),
+        ('GRADE_B', 'Grade B (Standard)'),
+        ('GRADE_C', 'Grade C (Below Standard)'),
+        ('SPOILED', 'Spoiled/Cracked'),
+    ]
+    
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    batch = models.ForeignKey('Batch', on_delete=models.CASCADE, related_name='egg_inventory')
+    collection_date = models.DateField()
+    grade = models.CharField(max_length=15, choices=EGG_GRADES)
+    quality = models.CharField(max_length=10, choices=EGG_QUALITY)
+    quantity_trays = models.DecimalField(max_digits=10, decimal_places=2, help_text="Number of trays (30 eggs/tray)")
+    quantity_pieces = models.IntegerField(help_text="Individual eggs")
+    spoiled_count = models.IntegerField(default=0)
+    available_stock = models.IntegerField(help_text="Current available stock in pieces")
+    price_per_tray = models.DecimalField(max_digits=10, decimal_places=2)
+    price_per_piece = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-collection_date']
+        verbose_name = 'Egg Inventory'
+        verbose_name_plural = 'Egg Inventories'
+    
+    def __str__(self):
+        return f"{self.batch.batch_name} - {self.get_grade_display()} {self.get_quality_display()} ({self.collection_date})"
+    
+    def save(self, *args, **kwargs):
+        # Auto-calculate price per piece if not provided
+        if not self.price_per_piece and self.price_per_tray:
+            self.price_per_piece = self.price_per_tray / 30
+        super().save(*args, **kwargs)
+
+
+class EggSale(models.Model):
+    """Track egg sales and customers"""
+    
+    CUSTOMER_TYPES = [
+        ('RETAIL', 'Retail Customer'),
+        ('WHOLESALE', 'Wholesale'),
+        ('RESTAURANT', 'Restaurant/Hotel'),
+        ('SUPERMARKET', 'Supermarket'),
+        ('DISTRIBUTOR', 'Distributor'),
+    ]
+    
+    PAYMENT_STATUS = [
+        ('PAID', 'Paid'),
+        ('PENDING', 'Pending'),
+        ('PARTIAL', 'Partial Payment'),
+        ('OVERDUE', 'Overdue'),
+    ]
+    
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    egg_inventory = models.ForeignKey(EggInventory, on_delete=models.CASCADE, related_name='sales')
+    customer_name = models.CharField(max_length=255)
+    customer_phone = models.CharField(max_length=20, null=True, blank=True)
+    customer_email = models.EmailField(null=True, blank=True)
+    customer_type = models.CharField(max_length=20, choices=CUSTOMER_TYPES)
+    quantity_sold = models.IntegerField(help_text="Quantity in pieces")
+    unit_price = models.DecimalField(max_digits=10, decimal_places=2, help_text="Price per piece or tray")
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    sale_date = models.DateField()
+    payment_status = models.CharField(max_length=20, choices=PAYMENT_STATUS, default='PENDING')
+    payment_date = models.DateField(null=True, blank=True)
+    invoice_number = models.CharField(max_length=100, null=True, blank=True, unique=True)
+    notes = models.TextField(null=True, blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-sale_date']
+        verbose_name = 'Egg Sale'
+        verbose_name_plural = 'Egg Sales'
+    
+    def __str__(self):
+        return f"{self.customer_name} - {self.quantity_sold} eggs ({self.sale_date})"
+    
+    @transaction.atomic
+    def save(self, *args, **kwargs):
+        # Update egg inventory stock when sale is created
+        if not self.pk:  # Only on create
+            EggInventory.objects.filter(id=self.egg_inventory.id).update(
+                available_stock=F('available_stock') - self.quantity_sold
+            )
+        super().save(*args, **kwargs)

@@ -11,6 +11,8 @@ from .views import (
     RegisterView,
     UserProfileView,
     UserAvatarUploadView,
+    GoogleLoginView,
+    FarmerViewSet,
     FarmViewSet,
     BatchViewSet,
     DeviceViewSet,
@@ -22,13 +24,19 @@ from .views import (
     RecommendationViewSet,
     SubscriptionViewSet,
     HealthViewSet,
-    GoogleLoginView,
-    FarmerViewSet,
     InventoryItemViewSet,
     InventoryTransactionViewSet,
     FeedConsumptionViewSet,
     InventoryAlertViewSet,
     HealthRecordViewSet,
+    MedicineInventoryViewSet,
+    MedicineAdministrationViewSet,
+    EquipmentInventoryViewSet,
+    LaborRecordViewSet,
+    ServiceExpenseViewSet,
+    HealthAlertViewSet,
+    EggInventoryViewSet,
+    EggSaleViewSet,
 )
 
 router = DefaultRouter()
@@ -49,6 +57,15 @@ router.register(r'inventory-transactions', InventoryTransactionViewSet, basename
 router.register(r'feed-consumption', FeedConsumptionViewSet, basename='feed-consumption')
 router.register(r'inventory-alerts', InventoryAlertViewSet, basename='inventory-alert')
 router.register(r'health-records', HealthRecordViewSet, basename='health-record')
+router.register(r'medicine-inventory', MedicineInventoryViewSet, basename='medicine-inventory')
+router.register(r'medicine-administration', MedicineAdministrationViewSet, basename='medicine-administration')
+router.register(r'equipment-inventory', EquipmentInventoryViewSet, basename='equipment-inventory')
+router.register(r'labor-records', LaborRecordViewSet, basename='labor-record')
+router.register(r'service-expenses', ServiceExpenseViewSet, basename='service-expense')
+router.register(r'health-alerts', HealthAlertViewSet, basename='health-alert')
+router.register(r'egg-inventory', EggInventoryViewSet, basename='egg-inventory')
+router.register(r'egg-sales', EggSaleViewSet, basename='egg-sale')
+
 
 @ensure_csrf_cookie
 def csrf_view(request, version=None):
