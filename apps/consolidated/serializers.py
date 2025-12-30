@@ -298,14 +298,8 @@ class FarmSerializer(serializers.ModelSerializer):
         read_only_fields = ('created_at', 'updated_at', 'farmer')
 
 class BatchSerializer(serializers.ModelSerializer):
-    farm = FarmMinimalSerializer(read_only=True)
-    farm_id = serializers.PrimaryKeyRelatedField(
-        queryset=Farm.objects.all(),
-        source='farm',
-        write_only=True,
-        required=True,
-        help_text="ID of the farm this batch belongs to"
-    )
+    farm_id = serializers.UUIDField(source='farm.id', read_only=True)
+    farm_name = serializers.CharField(source='farm.name', read_only=True)
     breed_config_id = serializers.PrimaryKeyRelatedField(
         queryset=BreedConfiguration.objects.all(),
         source='breed_config',
@@ -317,10 +311,10 @@ class BatchSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Batch
-        fields = ['id', 'farm', 'farm_id', 'batch_number', 'breed', 'breed_config_id',
+        fields = ['id', 'farm_id', 'farm_name', 'batch_number', 'breed', 'breed_config_id',
                   'quantity', 'start_date', 'expected_end_date', 'status', 'mortality_count', 
                   'current_age_days', 'created_at', 'updated_at']
-        read_only_fields = ('created_at', 'updated_at', 'farm')
+        read_only_fields = ('created_at', 'updated_at', 'farm_id', 'farm_name')
 
 class BreedConfigurationSerializer(serializers.ModelSerializer):
     breed_type_display = serializers.CharField(source='get_breed_type_display', read_only=True)
@@ -714,14 +708,28 @@ class BatchDetailSerializer(BatchSerializer):
 
 # View Serializers
 class UserProfileSerializer(serializers.Serializer):
+    id = serializers.UUIDField(read_only=True)
     email = serializers.EmailField()
     role = serializers.CharField()
     phone = serializers.CharField()
+    farmer_profile = serializers.SerializerMethodField()
     business_name = serializers.CharField(source='farmer_profile.business_name', required=False)
     location = serializers.CharField(source='farmer_profile.location', required=False)
     experience_years = serializers.IntegerField(source='farmer_profile.experience_years', required=False)
     verification_status = serializers.CharField(source='farmer_profile.verification_status', required=False)
     avatar_url = serializers.SerializerMethodField()
+    def get_farmer_profile(self, obj):
+        fp = getattr(obj, 'farmer_profile', None)
+        if fp:
+            return {
+                'id': str(fp.id),
+                'business_name': getattr(fp, 'business_name', None),
+                'location': getattr(fp, 'location', None),
+                'experience_years': getattr(fp, 'experience_years', None),
+                'verification_status': getattr(fp, 'verification_status', None),
+                'avatar_url': self.get_avatar_url(obj),
+            }
+        return None
 
     @extend_schema_field(serializers.CharField(allow_null=True))
     def get_avatar_url(self, obj):
