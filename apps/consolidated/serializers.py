@@ -300,6 +300,7 @@ class FarmSerializer(serializers.ModelSerializer):
 class BatchSerializer(serializers.ModelSerializer):
     farm_id = serializers.UUIDField(source='farm.id', read_only=True)
     farm_name = serializers.CharField(source='farm.name', read_only=True)
+    farm = serializers.PrimaryKeyRelatedField(queryset=Farm.objects.all(), write_only=True)
     breed_config_id = serializers.PrimaryKeyRelatedField(
         queryset=BreedConfiguration.objects.all(),
         source='breed_config',
@@ -311,7 +312,7 @@ class BatchSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Batch
-        fields = ['id', 'farm_id', 'farm_name', 'batch_number', 'breed', 'breed_config_id',
+        fields = ['id', 'farm', 'farm_id', 'farm_name', 'batch_number', 'breed', 'breed_config_id',
                   'quantity', 'start_date', 'expected_end_date', 'status', 'mortality_count', 
                   'current_age_days', 'created_at', 'updated_at']
         read_only_fields = ('created_at', 'updated_at', 'farm_id', 'farm_name')
