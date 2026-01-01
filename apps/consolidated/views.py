@@ -171,11 +171,36 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
 class IsFarmOwnerOrReadOnly(permissions.BasePermission):
     """
     Custom permission to only allow farm owners to edit their farms and related objects.
+    Staff users can manage any object.
     """
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
-        return obj.farmer == request.user.farmer_profile
+        
+        # Staff users can manage any object
+        if request.user.is_staff:
+            return True
+        
+        # Get user's farmer profile safely
+        try:
+            user_profile = request.user.farmer_profile
+        except AttributeError:
+            # User doesn't have a farmer_profile
+            return False
+        
+        # Handle different model types
+        if hasattr(obj, 'farmer'):
+            # Direct farmer relationship (e.g., Activity)
+            return obj.farmer == user_profile
+        elif hasattr(obj, 'farm'):
+            # Farm relationship (e.g., Device, Batch)
+            return obj.farm.farmer == user_profile
+        elif hasattr(obj, 'user'):
+            # Direct user relationship
+            return obj.user == request.user
+        else:
+            # Fallback for other objects
+            return False
 
 class IsAdminOrReadOnly(permissions.BasePermission):
     """
