@@ -359,6 +359,33 @@ class FarmerViewSet(viewsets.ReadOnlyModelViewSet):
     search_fields = ['user__email', 'user__first_name', 'user__last_name', 'business_name']
     ordering_fields = ['created_at', 'verification_status']
 
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
+    def verify(self, request, pk=None):
+        """
+        Verify or reject a farmer profile.
+        Only admin users can perform this action.
+        """
+        if not request.user.is_staff:
+            return Response(
+                {'error': 'Only admin users can verify farmer profiles'}, 
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        farmer = self.get_object()
+        new_status = request.data.get('status', 'VERIFIED')
+        
+        if new_status not in ['VERIFIED', 'REJECTED', 'SUSPENDED']:
+            return Response(
+                {'error': 'Invalid status. Must be VERIFIED, REJECTED, or SUSPENDED'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        farmer.verification_status = new_status
+        farmer.save()
+        
+        serializer = self.get_serializer(farmer)
+        return Response(serializer.data)
+
 @extend_schema_view(
     list=extend_schema_list(
         summary='List farms',

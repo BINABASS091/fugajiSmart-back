@@ -59,11 +59,18 @@ class User(AbstractUser):
         return self.email
 
 class FarmerProfile(models.Model):
+    VERIFICATION_STATUS_CHOICES = [
+        ('PENDING', 'Pending'),
+        ('VERIFIED', 'Verified'),
+        ('REJECTED', 'Rejected'),
+        ('SUSPENDED', 'Suspended'),
+    ]
+    
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='farmer_profile', primary_key=True)
     business_name = models.CharField(max_length=255, blank=True, null=True)
     location = models.CharField(max_length=255, blank=True, null=True)
     experience_years = models.PositiveIntegerField(default=0)
-    verification_status = models.CharField(max_length=10, default='PENDING')
+    verification_status = models.CharField(max_length=10, choices=VERIFICATION_STATUS_CHOICES, default='PENDING')
     avatar = models.ImageField(upload_to='avatars/%Y/%m/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
