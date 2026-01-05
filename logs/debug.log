@@ -1,0 +1,376 @@
+INFO 2025-11-25 18:02:14,448 autoreload 150077 140079035100096 Watching for file changes with StatReloader
+INFO 2025-11-25 18:17:03,585 autoreload 156610 140342072937408 Watching for file changes with StatReloader
+WARNING 2025-11-25 18:17:10,969 basehttp 156610 140341973870272 "GET / HTTP/1.1" 404 2666
+INFO 2025-11-25 18:17:17,293 basehttp 156610 140341973870272 "GET /admin/ HTTP/1.1" 302 0
+INFO 2025-11-25 18:17:17,358 basehttp 156610 140341973870272 "GET /admin/login/?next=/admin/ HTTP/1.1" 200 4174
+INFO 2025-11-25 18:17:20,809 basehttp 156610 140341973870272 "POST /admin/login/?next=/admin/ HTTP/1.1" 200 4355
+INFO 2025-11-25 18:17:43,751 basehttp 156610 140341973870272 "POST /admin/login/?next=/admin/ HTTP/1.1" 200 4355
+INFO 2025-11-25 18:18:31,875 autoreload 157328 140537646853056 Watching for file changes with StatReloader
+INFO 2025-11-25 18:18:38,824 basehttp 157328 140537547974336 "POST /admin/login/?next=/admin/ HTTP/1.1" 302 0
+INFO 2025-11-25 18:18:38,927 basehttp 157328 140537547974336 "GET /admin/ HTTP/1.1" 200 5556
+INFO 2025-11-25 18:18:48,807 basehttp 157328 140537547974336 "GET /admin HTTP/1.1" 301 0
+INFO 2025-11-25 18:18:48,855 basehttp 157328 140537539581632 "GET /admin/ HTTP/1.1" 200 5556
+INFO 2025-11-25 18:19:03,632 autoreload 157618 140320381930432 Watching for file changes with StatReloader
+WARNING 2025-11-25 18:19:07,589 basehttp 157618 140320283027136 "GET / HTTP/1.1" 404 2666
+INFO 2025-11-25 18:19:13,284 basehttp 157618 140320283027136 "GET /admin/ HTTP/1.1" 200 5556
+INFO 2025-11-25 18:19:15,775 basehttp 157618 140320283027136 "GET /admin/auth/group/ HTTP/1.1" 200 7353
+INFO 2025-11-25 18:19:15,881 basehttp 157618 140320188651200 "GET /static/admin/js/core.js HTTP/1.1" 200 6208
+INFO 2025-11-25 18:19:15,883 basehttp 157618 140320180258496 "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 200 9777
+INFO 2025-11-25 18:19:15,885 basehttp 157618 140320283027136 "GET /static/admin/css/changelists.css HTTP/1.1" 200 6878
+INFO 2025-11-25 18:19:15,891 basehttp 157618 140320171865792 "GET /static/admin/js/actions.js HTTP/1.1" 200 8076
+INFO 2025-11-25 18:19:15,905 basehttp 157618 140320205436608 "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+INFO 2025-11-25 18:19:15,906 basehttp 157618 140320188651200 "GET /static/admin/js/urlify.js HTTP/1.1" 200 7887
+INFO 2025-11-25 18:19:15,907 basehttp 157618 140320197043904 "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 285314
+INFO 2025-11-25 18:19:15,925 basehttp 157618 140320180258496 "GET /static/admin/js/jquery.init.js HTTP/1.1" 200 347
+INFO 2025-11-25 18:19:15,926 basehttp 157618 140320283027136 "GET /static/admin/js/prepopulate.js HTTP/1.1" 200 1531
+INFO 2025-11-25 18:19:15,931 basehttp 157618 140320205436608 "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 325171
+INFO 2025-11-25 18:19:15,957 basehttp 157618 140320188651200 "GET /static/admin/img/search.svg HTTP/1.1" 200 458
+INFO 2025-11-25 18:19:16,011 basehttp 157618 140320188651200 "GET /static/admin/js/filters.js HTTP/1.1" 200 978
+INFO 2025-11-25 18:19:16,060 basehttp 157618 140320188651200 "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 200 331
+INFO 2025-11-25 18:19:40,594 basehttp 157618 140320188651200 "GET /admin/auth/ HTTP/1.1" 200 5576
+INFO 2025-11-25 18:19:47,430 basehttp 157618 140320188651200 "GET /admin/ HTTP/1.1" 200 5556
+INFO 2025-11-25 18:20:27,191 autoreload 158271 140455536774080 Watching for file changes with StatReloader
+WARNING 2025-11-25 18:20:41,608 basehttp 158271 140455362688704 "GET / HTTP/1.1" 404 2666
+INFO 2025-11-25 18:20:45,502 basehttp 158271 140455362688704 "GET /admin/ HTTP/1.1" 200 15933
+INFO 2025-11-25 18:21:23,107 autoreload 158271 140455536774080 /home/kilimanjaro/Desktop/cohort-kuku/backend/apps/consolidated/__init__.py changed, reloading.
+INFO 2025-11-25 18:21:23,950 autoreload 158732 139786220706752 Watching for file changes with StatReloader
+INFO 2025-11-26 09:56:54,114 autoreload 158732 139786220706752 /home/kilimanjaro/Desktop/cohort-kuku/backend/apps/consolidated/serializers.py changed, reloading.
+INFO 2025-11-26 09:57:31,450 autoreload 180512 140330448456640 Watching for file changes with StatReloader
+INFO 2025-11-26 09:58:10,454 autoreload 180512 140330448456640 /home/kilimanjaro/Desktop/cohort-kuku/backend/apps/consolidated/views.py changed, reloading.
+INFO 2025-11-26 09:58:13,358 autoreload 180803 140085066877888 Watching for file changes with StatReloader
+INFO 2025-12-07 13:29:21,479 autoreload 18304 140377923599296 Watching for file changes with StatReloader
+INFO 2025-12-08 09:47:30,427 autoreload 11910 140375237348288 Watching for file changes with StatReloader
+INFO 2025-12-08 09:49:46,382 autoreload 12603 140680772971456 Watching for file changes with StatReloader
+INFO 2025-12-08 09:53:06,187 autoreload 14658 139967198702528 Watching for file changes with StatReloader
+INFO 2025-12-08 09:54:16,808 autoreload 15054 140706016889792 Watching for file changes with StatReloader
+INFO 2025-12-08 09:55:25,357 autoreload 15498 140656976997312 Watching for file changes with StatReloader
+WARNING 2025-12-08 10:00:20,722 basehttp 15498 140656878020288 "GET /api/schema/ HTTP/1.1" 404 3858
+INFO 2025-12-08 10:01:20,872 autoreload 15498 140656976997312 /home/kilimanjaro/Desktop/cohort-kuku/backend/config/urls.py changed, reloading.
+INFO 2025-12-08 10:01:22,582 autoreload 18562 139864385448896 Watching for file changes with StatReloader
+INFO 2025-12-08 10:02:01,900 autoreload 18562 139864385448896 /home/kilimanjaro/Desktop/cohort-kuku/backend/config/urls.py changed, reloading.
+INFO 2025-12-08 10:02:03,160 autoreload 18849 139835193088960 Watching for file changes with StatReloader
+INFO 2025-12-08 10:02:14,219 autoreload 18947 140445479340992 Watching for file changes with StatReloader
+INFO 2025-12-08 10:02:23,199 basehttp 18947 140445380241088 "GET /api/schema/ HTTP/1.1" 200 357
+INFO 2025-12-08 10:02:23,262 basehttp 18947 140445380241088 "GET /api/docs/swagger/ HTTP/1.1" 200 4549
+INFO 2025-12-08 10:03:21,583 autoreload 18947 140445479340992 /home/kilimanjaro/Desktop/cohort-kuku/backend/config/urls.py changed, reloading.
+INFO 2025-12-08 10:03:22,810 autoreload 19376 140462105029568 Watching for file changes with StatReloader
+INFO 2025-12-08 10:03:24,395 autoreload 19376 140462105029568 /home/kilimanjaro/Desktop/cohort-kuku/backend/config/urls.py changed, reloading.
+INFO 2025-12-08 10:03:25,355 autoreload 19409 140305764568000 Watching for file changes with StatReloader
+INFO 2025-12-08 10:04:03,965 autoreload 19409 140305764568000 /home/kilimanjaro/Desktop/cohort-kuku/backend/apps/consolidated/urls.py changed, reloading.
+INFO 2025-12-08 10:04:04,744 autoreload 19605 140657880832960 Watching for file changes with StatReloader
+INFO 2025-12-08 10:04:07,238 autoreload 19605 140657880832960 /home/kilimanjaro/Desktop/cohort-kuku/backend/apps/consolidated/urls.py changed, reloading.
+INFO 2025-12-08 10:04:08,640 autoreload 19642 140642531781568 Watching for file changes with StatReloader
+INFO 2025-12-08 10:04:30,822 autoreload 19642 140642531781568 /home/kilimanjaro/Desktop/cohort-kuku/backend/apps/consolidated/views.py changed, reloading.
+INFO 2025-12-08 10:04:31,888 autoreload 19760 140634074053568 Watching for file changes with StatReloader
+INFO 2025-12-08 10:04:50,659 autoreload 19760 140634074053568 /home/kilimanjaro/Desktop/cohort-kuku/backend/apps/consolidated/views.py changed, reloading.
+INFO 2025-12-08 10:04:51,582 autoreload 19896 140693901339584 Watching for file changes with StatReloader
+INFO 2025-12-08 10:05:22,543 autoreload 20187 140079064378304 Watching for file changes with StatReloader
+INFO 2025-12-08 10:05:44,358 basehttp 20187 140078964795072 "GET /api/schema/ HTTP/1.1" 200 357
+INFO 2025-12-08 10:07:20,078 autoreload 20187 140079064378304 /home/kilimanjaro/Desktop/cohort-kuku/backend/apps/consolidated/urls.py changed, reloading.
+INFO 2025-12-08 10:07:20,768 autoreload 20973 139759847119808 Watching for file changes with StatReloader
+INFO 2025-12-08 10:07:22,138 autoreload 20973 139759847119808 /home/kilimanjaro/Desktop/cohort-kuku/backend/apps/consolidated/urls.py changed, reloading.
+INFO 2025-12-08 10:07:22,851 autoreload 21002 139717235047360 Watching for file changes with StatReloader
+INFO 2025-12-08 10:07:30,013 autoreload 21052 140287363742656 Watching for file changes with StatReloader
+WARNING 2025-12-08 10:07:37,037 basehttp 21052 140287187875520 "GET /api/v1/health/ping/ HTTP/1.1" 401 58
+INFO 2025-12-08 10:07:37,084 basehttp 21052 140287187875520 "GET /api/schema/ HTTP/1.1" 200 357
+INFO 2025-12-08 10:08:42,327 autoreload 21453 140601723481024 Watching for file changes with StatReloader
+WARNING 2025-12-08 10:08:54,553 basehttp 21453 140601624356544 "GET /api/v1/health/ping/ HTTP/1.1" 401 58
+WARNING 2025-12-08 10:08:54,585 basehttp 21453 140601624356544 "GET /api/v1/health/ HTTP/1.1" 404 19846
+INFO 2025-12-08 10:08:54,624 basehttp 21453 140601624356544 "GET /api/schema/ HTTP/1.1" 200 357
+INFO 2025-12-08 10:09:13,091 autoreload 21453 140601723481024 /home/kilimanjaro/Desktop/cohort-kuku/backend/apps/consolidated/views.py changed, reloading.
+INFO 2025-12-08 10:09:13,830 autoreload 21710 140118726298560 Watching for file changes with StatReloader
+INFO 2025-12-08 10:09:33,349 autoreload 21875 139899671878592 Watching for file changes with StatReloader
+INFO 2025-12-08 10:09:35,069 basehttp 21875 139899499968192 "GET /api/v1/health/ping/ HTTP/1.1" 200 15
+INFO 2025-12-08 10:09:35,087 basehttp 21875 139899499968192 "GET /api/v1/health/ HTTP/1.1" 200 40
+INFO 2025-12-08 10:09:35,138 basehttp 21875 139899499968192 "GET /api/schema/ HTTP/1.1" 200 357
+INFO 2025-12-08 10:10:40,697 autoreload 21875 139899671878592 /home/kilimanjaro/Desktop/cohort-kuku/backend/apps/consolidated/urls.py changed, reloading.
+INFO 2025-12-08 10:10:41,851 autoreload 22258 139960614906816 Watching for file changes with StatReloader
+INFO 2025-12-08 10:10:46,407 autoreload 22258 139960614906816 /home/kilimanjaro/Desktop/cohort-kuku/backend/apps/consolidated/urls.py changed, reloading.
+INFO 2025-12-08 10:10:47,667 autoreload 22304 140576441428928 Watching for file changes with StatReloader
+INFO 2025-12-08 10:11:00,754 autoreload 22439 140213412883392 Watching for file changes with StatReloader
+INFO 2025-12-08 10:11:08,947 basehttp 22439 140213313595072 "GET /api/v1/health/ HTTP/1.1" 200 40
+INFO 2025-12-08 10:11:09,002 basehttp 22439 140213313595072 "GET /api/schema/ HTTP/1.1" 200 357
+INFO 2025-12-08 10:11:35,083 basehttp 22439 140213313595072 "OPTIONS /api/breed-configurations/ HTTP/1.1" 200 0
+INFO 2025-12-08 10:11:35,087 basehttp 22439 140213233907392 "OPTIONS /api/breed-configurations/ HTTP/1.1" 200 0
+WARNING 2025-12-08 10:11:35,140 basehttp 22439 140213233907392 "GET /api/breed-configurations/ HTTP/1.1" 404 3437
+WARNING 2025-12-08 10:11:35,229 basehttp 22439 140213313595072 "GET /api/breed-configurations/ HTTP/1.1" 404 3437
+INFO 2025-12-08 10:12:26,806 autoreload 22439 140213412883392 /home/kilimanjaro/Desktop/cohort-kuku/backend/config/settings.py changed, reloading.
+INFO 2025-12-08 10:12:27,621 autoreload 23024 140447156513728 Watching for file changes with StatReloader
+INFO 2025-12-08 10:12:30,063 autoreload 23024 140447156513728 /home/kilimanjaro/Desktop/cohort-kuku/backend/config/settings.py changed, reloading.
+INFO 2025-12-08 10:12:30,906 autoreload 23067 139703628663744 Watching for file changes with StatReloader
+INFO 2025-12-08 10:12:58,745 autoreload 23227 139921867840448 Watching for file changes with StatReloader
+INFO 2025-12-08 10:13:10,160 autoreload 23363 140569686473664 Watching for file changes with StatReloader
+INFO 2025-12-08 10:14:44,534 autoreload 23851 140198998338496 Watching for file changes with StatReloader
+INFO 2025-12-08 10:15:26,510 autoreload 24131 140152261692352 Watching for file changes with StatReloader
+INFO 2025-12-08 10:16:17,474 autoreload 24513 139701195967424 Watching for file changes with StatReloader
+INFO 2025-12-08 10:17:06,044 autoreload 24814 139648142113728 Watching for file changes with StatReloader
+INFO 2025-12-08 10:18:04,186 autoreload 25139 140696845257664 Watching for file changes with StatReloader
+INFO 2025-12-08 10:18:30,233 basehttp 25139 140696744879808 "OPTIONS /api/farmers/ HTTP/1.1" 200 0
+INFO 2025-12-08 10:18:30,234 basehttp 25139 140696736487104 "OPTIONS /api/farmers/ HTTP/1.1" 200 0
+WARNING 2025-12-08 10:18:30,260 basehttp 25139 140696736487104 "GET /api/farmers/ HTTP/1.1" 404 3398
+WARNING 2025-12-08 10:18:30,321 basehttp 25139 140696744879808 "GET /api/farmers/ HTTP/1.1" 404 3398
+INFO 2025-12-08 10:18:47,775 autoreload 25139 140696845257664 /home/kilimanjaro/Desktop/cohort-kuku/backend/apps/consolidated/urls.py changed, reloading.
+INFO 2025-12-08 10:18:48,792 autoreload 25429 140491020762048 Watching for file changes with StatReloader
+INFO 2025-12-08 10:19:11,969 autoreload 25578 139826980379584 Watching for file changes with StatReloader
+INFO 2025-12-08 10:19:14,752 basehttp 25578 139826881881792 "GET /api/v1/health/ HTTP/1.1" 200 40
+INFO 2025-12-08 10:19:15,073 basehttp 25578 139826881881792 "GET /api/schema/ HTTP/1.1" 200 74434
+INFO 2025-12-08 10:21:00,611 autoreload 25578 139826980379584 /home/kilimanjaro/Desktop/cohort-kuku/backend/apps/consolidated/views.py changed, reloading.
+INFO 2025-12-08 10:21:02,364 autoreload 26029 139758659894208 Watching for file changes with StatReloader
+INFO 2025-12-08 10:21:04,756 autoreload 26029 139758659894208 /home/kilimanjaro/Desktop/cohort-kuku/backend/apps/consolidated/views.py changed, reloading.
+INFO 2025-12-08 10:21:05,722 autoreload 26066 139788882185152 Watching for file changes with StatReloader
+INFO 2025-12-08 10:21:33,261 autoreload 26066 139788882185152 /home/kilimanjaro/Desktop/cohort-kuku/backend/apps/consolidated/serializers.py changed, reloading.
+INFO 2025-12-08 10:21:34,028 autoreload 26250 140316315814848 Watching for file changes with StatReloader
+INFO 2025-12-08 10:21:37,444 autoreload 26250 140316315814848 /home/kilimanjaro/Desktop/cohort-kuku/backend/apps/consolidated/serializers.py changed, reloading.
+INFO 2025-12-08 10:21:38,644 autoreload 26288 139664079895488 Watching for file changes with StatReloader
+INFO 2025-12-08 10:22:56,735 autoreload 27243 140672302832576 Watching for file changes with StatReloader
+INFO 2025-12-08 10:23:42,712 autoreload 27243 140672302832576 /home/kilimanjaro/Desktop/cohort-kuku/backend/apps/consolidated/urls.py changed, reloading.
+INFO 2025-12-08 10:23:43,478 autoreload 27577 140112824683456 Watching for file changes with StatReloader
+INFO 2025-12-08 10:23:46,009 autoreload 27577 140112824683456 /home/kilimanjaro/Desktop/cohort-kuku/backend/apps/consolidated/urls.py changed, reloading.
+INFO 2025-12-08 10:23:46,678 autoreload 27606 140641795451840 Watching for file changes with StatReloader
+INFO 2025-12-08 10:23:56,052 autoreload 27690 140331187964864 Watching for file changes with StatReloader
+ERROR 2025-12-08 10:24:03,752 log 27690 140331087554240 Internal Server Error: /api/schema/
+Traceback (most recent call last):
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/rest_framework/views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/rest_framework/views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/rest_framework/views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/rest_framework/views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/drf_spectacular/views.py", line 84, in get
+    return self._get_schema_response(request)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/drf_spectacular/views.py", line 92, in _get_schema_response
+    data=generator.get_schema(request=request, public=self.serve_public),
+         ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/drf_spectacular/generators.py", line 281, in get_schema
+    paths=self.parse(request, public),
+          ~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/drf_spectacular/generators.py", line 252, in parse
+    operation = view.schema.get_operation(
+        path, path_regex, path_prefix, method, self.registry
+    )
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/drf_spectacular/openapi.py", line 91, in get_operation
+    parameters = self._get_parameters()
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/drf_spectacular/openapi.py", line 259, in _get_parameters
+    **dict_helper(self._get_filter_parameters()),
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/drf_spectacular/openapi.py", line 545, in _get_filter_parameters
+    parameters += filter_extension.get_schema_operation_parameters(self)
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/drf_spectacular/contrib/django_filters.py", line 58, in get_schema_operation_parameters
+    filterset_class = self.target.get_filterset_class(auto_schema.view, get_manager(model).none())
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/django_filters/rest_framework/backends.py", line 49, in get_filterset_class
+    class AutoFilterSet(self.filterset_base):
+    ...<2 lines>...
+            fields = filterset_fields
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/django_filters/filterset.py", line 82, in __new__
+    new_class.base_filters = new_class.get_filters()
+                             ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/django_filters/filterset.py", line 371, in get_filters
+    raise TypeError(
+    ...<2 lines>...
+    )
+TypeError: 'Meta.fields' must not contain non-model field names: priority
+ERROR 2025-12-08 10:24:03,760 basehttp 27690 140331087554240 "GET /api/schema/ HTTP/1.1" 500 178009
+INFO 2025-12-08 10:25:13,147 autoreload 28215 139772397632448 Watching for file changes with StatReloader
+ERROR 2025-12-08 10:25:19,511 log 28215 139772297209536 Internal Server Error: /api/schema/
+Traceback (most recent call last):
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/rest_framework/views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/rest_framework/views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/rest_framework/views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/rest_framework/views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/drf_spectacular/views.py", line 84, in get
+    return self._get_schema_response(request)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/drf_spectacular/views.py", line 92, in _get_schema_response
+    data=generator.get_schema(request=request, public=self.serve_public),
+         ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/drf_spectacular/generators.py", line 281, in get_schema
+    paths=self.parse(request, public),
+          ~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/drf_spectacular/generators.py", line 252, in parse
+    operation = view.schema.get_operation(
+        path, path_regex, path_prefix, method, self.registry
+    )
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/drf_spectacular/openapi.py", line 91, in get_operation
+    parameters = self._get_parameters()
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/drf_spectacular/openapi.py", line 259, in _get_parameters
+    **dict_helper(self._get_filter_parameters()),
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/drf_spectacular/openapi.py", line 545, in _get_filter_parameters
+    parameters += filter_extension.get_schema_operation_parameters(self)
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/drf_spectacular/contrib/django_filters.py", line 58, in get_schema_operation_parameters
+    filterset_class = self.target.get_filterset_class(auto_schema.view, get_manager(model).none())
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/django_filters/rest_framework/backends.py", line 49, in get_filterset_class
+    class AutoFilterSet(self.filterset_base):
+    ...<2 lines>...
+            fields = filterset_fields
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/django_filters/filterset.py", line 82, in __new__
+    new_class.base_filters = new_class.get_filters()
+                             ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/django_filters/filterset.py", line 371, in get_filters
+    raise TypeError(
+    ...<2 lines>...
+    )
+TypeError: 'Meta.fields' must not contain non-model field names: status
+ERROR 2025-12-08 10:25:19,516 basehttp 28215 139772297209536 "GET /api/schema/ HTTP/1.1" 500 177500
+INFO 2025-12-08 10:27:08,131 autoreload 28983 140692867435456 Watching for file changes with StatReloader
+INFO 2025-12-08 10:27:15,043 basehttp 28983 140692767631040 "GET /api/schema/ HTTP/1.1" 200 52918
+INFO 2025-12-08 10:28:18,862 autoreload 29502 140100503702464 Watching for file changes with StatReloader
+INFO 2025-12-08 10:28:22,821 basehttp 29502 140100403979968 "GET /api/schema/ HTTP/1.1" 200 77211
+INFO 2025-12-08 10:29:58,885 autoreload 30153 140660668152768 Watching for file changes with StatReloader
+ERROR 2025-12-08 10:30:01,572 log 30153 140660569007808 Internal Server Error: /api/schema/
+Traceback (most recent call last):
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/django/views/generic/base.py", line 105, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/rest_framework/views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/rest_framework/views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/rest_framework/views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/rest_framework/views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/drf_spectacular/views.py", line 84, in get
+    return self._get_schema_response(request)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/drf_spectacular/views.py", line 92, in _get_schema_response
+    data=generator.get_schema(request=request, public=self.serve_public),
+         ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/drf_spectacular/generators.py", line 281, in get_schema
+    paths=self.parse(request, public),
+          ~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/drf_spectacular/generators.py", line 252, in parse
+    operation = view.schema.get_operation(
+        path, path_regex, path_prefix, method, self.registry
+    )
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/drf_spectacular/openapi.py", line 111, in get_operation
+    operation['responses'] = self._get_response_bodies()
+                             ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/drf_spectacular/openapi.py", line 1367, in _get_response_bodies
+    return {'200': self._get_response_for_code(response_serializers, '200', direction=direction)}
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/drf_spectacular/openapi.py", line 1423, in _get_response_for_code
+    component = self.resolve_serializer(serializer, direction)
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/drf_spectacular/openapi.py", line 1605, in resolve_serializer
+    component.schema = self._map_serializer(serializer, direction, bypass_extensions)
+                       ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/drf_spectacular/openapi.py", line 927, in _map_serializer
+    schema = self._map_basic_serializer(serializer, direction)
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/drf_spectacular/openapi.py", line 1020, in _map_basic_serializer
+    for field in serializer.fields.values():
+                 ^^^^^^^^^^^^^^^^^
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ~~~~~~~~~^^^^^^^^^^
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 374, in fields
+    for key, value in self.get_fields().items():
+                      ~~~~~~~~~~~~~~~^^
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 1105, in get_fields
+    field_class, field_kwargs = self.build_field(
+                                ~~~~~~~~~~~~~~~~^
+        source, info, model, depth
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 1251, in build_field
+    return self.build_unknown_field(field_name, model_class)
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kilimanjaro/Desktop/cohort-kuku/backend/venv/lib/python3.13/site-packages/rest_framework/serializers.py", line 1369, in build_unknown_field
+    raise ImproperlyConfigured(
+    ...<2 lines>...
+    )
+django.core.exceptions.ImproperlyConfigured: Field name `plan_details` is not valid for model `Subscription` in `apps.consolidated.serializers.SubscriptionSerializer`.
+ERROR 2025-12-08 10:30:01,580 basehttp 30153 140660569007808 "GET /api/schema/ HTTP/1.1" 500 210591
+INFO 2025-12-08 10:30:43,236 autoreload 30499 140357880904640 Watching for file changes with StatReloader
+INFO 2025-12-08 10:30:53,961 autoreload 30615 140171756915648 Watching for file changes with StatReloader
+INFO 2025-12-08 10:30:57,789 basehttp 30615 140171657864896 "GET /api/schema/ HTTP/1.1" 200 77211
+INFO 2025-12-08 10:32:11,034 autoreload 31200 140142838574016 Watching for file changes with StatReloader
+INFO 2025-12-08 10:32:25,779 basehttp 31200 140142738138816 "POST /api/v1/auth/login/ HTTP/1.1" 200 682
+WARNING 2025-12-08 10:33:30,273 basehttp 31200 140142738138816 "GET /api/v1/farms/ HTTP/1.1" 401 172
+INFO 2025-12-08 10:34:37,408 basehttp 31200 140142738138816 "GET /api/v1/farms/ HTTP/1.1" 200 52
+WARNING 2025-12-08 10:35:40,154 basehttp 31200 140142738138816 "POST /api/v1/farms/ HTTP/1.1" 401 172
+INFO 2025-12-08 10:36:05,837 basehttp 31200 140142738138816 "POST /api/v1/auth/login/ HTTP/1.1" 200 682
+INFO 2025-12-08 10:36:37,447 basehttp 31200 140142738138816 "POST /api/v1/farms/ HTTP/1.1" 201 302
+WARNING 2025-12-08 10:37:45,326 basehttp 31200 140142738138816 "GET /api/farmers/ HTTP/1.1" 404 3398
+WARNING 2025-12-08 10:37:54,738 basehttp 31200 140142738138816 "GET /api/farmers/ HTTP/1.1" 404 3398
+WARNING 2025-12-08 10:37:57,817 basehttp 31200 140142738138816 "GET /api/farmers/ HTTP/1.1" 404 3398
+WARNING 2025-12-08 10:37:59,125 basehttp 31200 140142738138816 "GET /api/farmers/ HTTP/1.1" 404 3398
+WARNING 2025-12-08 10:38:00,315 basehttp 31200 140142738138816 "GET /api/farmers/ HTTP/1.1" 404 3398
+INFO 2025-12-08 10:38:43,564 autoreload 33903 140442962746304 Watching for file changes with StatReloader
+INFO 2025-12-08 10:39:20,553 basehttp 33903 140442863658688 "POST /api/v1/farms/ HTTP/1.1" 201 303
+INFO 2025-12-08 11:07:16,994 autoreload 38543 139960707763136 Watching for file changes with StatReloader
+INFO 2025-12-08 11:07:32,001 basehttp 38543 139960608876224 "POST /api/v1/auth/login/ HTTP/1.1" 200 682
+WARNING 2025-12-08 11:17:50,491 basehttp 38543 139960608876224 "GET /api/farmers/ HTTP/1.1" 404 3398
+WARNING 2025-12-08 11:17:50,527 basehttp 38543 139960599434944 "GET /api/farmers/ HTTP/1.1" 404 3398
+WARNING 2025-12-08 11:18:17,765 basehttp 38543 139960608876224 "GET /api/farms/ HTTP/1.1" 404 3392
+WARNING 2025-12-08 11:18:17,800 basehttp 38543 139960599434944 "GET /api/devices/ HTTP/1.1" 404 3398
+WARNING 2025-12-08 11:18:17,820 basehttp 38543 139960591042240 "GET /api/farms/ HTTP/1.1" 404 3392
+WARNING 2025-12-08 11:18:17,863 basehttp 38543 139960608876224 "GET /api/devices/ HTTP/1.1" 404 3398
+WARNING 2025-12-08 11:19:47,462 basehttp 38543 139960591042240 "GET /api/v1/farms/ HTTP/1.1" 401 58
+WARNING 2025-12-08 11:19:47,463 basehttp 38543 139960608876224 "GET /api/v1/batches/ HTTP/1.1" 401 58
+WARNING 2025-12-08 11:19:47,477 basehttp 38543 139960599434944 "GET /api/v1/farms/ HTTP/1.1" 401 58
+WARNING 2025-12-08 11:19:47,482 basehttp 38543 139960582649536 "GET /api/v1/batches/ HTTP/1.1" 401 58
+WARNING 2025-12-08 11:20:06,573 basehttp 38543 139960582649536 "GET /api/breed-configurations/ HTTP/1.1" 404 3437
+WARNING 2025-12-08 11:20:06,609 basehttp 38543 139960599434944 "GET /api/breed-configurations/ HTTP/1.1" 404 3437
+INFO 2025-12-08 11:37:39,635 autoreload 48199 140681701694400 Watching for file changes with StatReloader
+INFO 2025-12-08 12:08:09,513 autoreload 9570 140581183503296 Watching for file changes with StatReloader
+INFO 2025-12-08 12:08:24,715 autoreload 9707 140188323937216 Watching for file changes with StatReloader
+INFO 2025-12-08 12:10:35,648 autoreload 9707 140188323937216 /home/kilimanjaro/Desktop/cohort-kuku/backend/config/settings.py changed, reloading.
+INFO 2025-12-08 12:10:36,301 autoreload 10935 140343593143232 Watching for file changes with StatReloader
+INFO 2025-12-08 12:10:46,447 basehttp 10935 140343425103552 "POST /api/v1/auth/login/ HTTP/1.1" 200 682
+INFO 2025-12-08 12:11:49,483 basehttp 10935 140343425103552 "GET /api/v1/batches/ HTTP/1.1" 200 52
+INFO 2025-12-08 13:23:39,175 autoreload 15704 140430270356416 Watching for file changes with StatReloader
+INFO 2025-12-08 13:23:42,109 basehttp 15704 140430171694784 "OPTIONS /auth/login/ HTTP/1.1" 200 0
+WARNING 2025-12-08 13:23:42,161 basehttp 15704 140430171694784 "POST /auth/login/ HTTP/1.1" 404 3396
+WARNING 2025-12-08 13:23:43,529 basehttp 15704 140430171694784 "POST /auth/login/ HTTP/1.1" 404 3396
+WARNING 2025-12-08 13:23:44,593 basehttp 15704 140430171694784 "POST /auth/login/ HTTP/1.1" 404 3396
+WARNING 2025-12-08 13:23:46,009 basehttp 15704 140430171694784 "POST /auth/login/ HTTP/1.1" 404 3396
+WARNING 2025-12-08 13:23:47,147 basehttp 15704 140430171694784 "POST /auth/login/ HTTP/1.1" 404 3396
+INFO 2025-12-08 13:24:13,974 autoreload 16005 140149860551616 Watching for file changes with StatReloader
+WARNING 2025-12-08 13:24:47,260 basehttp 16005 140149761500864 "POST /auth/login/ HTTP/1.1" 404 3396
+INFO 2025-12-08 14:16:58,339 autoreload 30246 139825682185152 Watching for file changes with StatReloader
+INFO 2025-12-08 14:23:21,821 autoreload 32018 140501613444032 Watching for file changes with StatReloader
+INFO 2025-12-08 14:26:30,223 autoreload 32952 140704519449536 Watching for file changes with StatReloader
+INFO 2025-12-08 14:38:44,077 autoreload 36295 140130814065600 Watching for file changes with StatReloader
+INFO 2025-12-08 14:42:19,952 autoreload 37378 140501747809216 Watching for file changes with StatReloader
+INFO 2025-12-08 14:43:26,305 autoreload 37737 139742603819968 Watching for file changes with StatReloader
+INFO 2025-12-08 14:46:09,221 autoreload 38533 140597583555520 Watching for file changes with StatReloader
+INFO 2025-12-09 11:29:49,323 autoreload 21541 140370575309760 Watching for file changes with StatReloader
+INFO 2025-12-09 11:31:35,647 autoreload 22176 140579008633792 Watching for file changes with StatReloader
+INFO 2025-12-09 11:50:50,902 autoreload 22176 140579008633792 /home/kilimanjaro/Desktop/cohort-kuku/backend/config/settings.py changed, reloading.

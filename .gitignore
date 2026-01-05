@@ -1,0 +1,28 @@
+# Python
+*.pyc
+__pycache__/
+
+# Environment
+.env
+.env.backup
+
+# SQLite database
+db.sqlite3
+
+# Media files
+media/
+
+# Logs
+logs/
+
+# Static files (collected)
+staticfiles/
+
+# VS Code settings
+.vscode/
+
+# OS files
+.DS_Store
+
+# Backup files
+backup_*.sql
